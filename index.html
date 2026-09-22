@@ -13,6 +13,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
   <style>
     :root {
       --surya-red: #D8232A;
@@ -45,7 +49,7 @@
     .top-strip a { color: #CBD5E1; text-decoration: none; }
     .top-strip b { color: white; }
 
-    /* Corporate Header */
+    /* Header */
     header {
       background: var(--white);
       box-shadow: 0 4px 20px rgba(0,0,0,0.06);
@@ -62,7 +66,7 @@
       padding: 14px 20px;
     }
 
-    /* Brand Logo */
+    /* Brand Logo Badge */
     .brand-container {
       display: flex;
       align-items: center;
@@ -146,15 +150,9 @@
       border: none;
       transition: all 0.2s ease;
     }
-    .btn-call {
-      background: #10B981;
-      color: white;
-    }
+    .btn-call { background: #10B981; color: white; }
     .btn-call:hover { background: #059669; }
-    .btn-primary {
-      background: var(--surya-red);
-      color: white;
-    }
+    .btn-primary { background: var(--surya-red); color: white; }
     .btn-primary:hover { background: var(--surya-red-dark); }
     .btn-outline {
       border: 1.5px solid var(--border-color);
@@ -163,23 +161,13 @@
     }
     .btn-outline:hover { background: var(--bg-light); }
 
-    /* Hero Banner */
+    /* Hero Section */
     .hero-section {
       background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
       color: white;
       padding: 70px 20px;
       position: relative;
       overflow: hidden;
-    }
-    .hero-section::after {
-      content: '';
-      position: absolute;
-      right: -5%;
-      bottom: -30%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(216, 35, 42, 0.25) 0%, transparent 70%);
-      border-radius: 50%;
     }
     .hero-content {
       max-width: 1280px;
@@ -205,7 +193,7 @@
       margin-bottom: 20px;
     }
     .hero-title {
-      font-size: 42px;
+      font-size: 40px;
       line-height: 1.2;
       font-weight: 800;
       margin-bottom: 18px;
@@ -402,7 +390,7 @@
     }
     .admin-table th { background: #f8fafc; font-weight: 700; }
 
-    /* Modals */
+    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -460,7 +448,6 @@
       cursor: pointer;
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
       margin-top: 10px;
-      transition: background 0.2s;
     }
     .btn-google:hover { background: #f8f9fa; }
     .divider {
@@ -486,7 +473,6 @@
       text-transform: uppercase;
     }
 
-    /* Footer */
     footer {
       background: var(--dark-navy);
       color: #94A3B8;
@@ -514,7 +500,9 @@
 </head>
 <body>
 
-  <!-- Top Strip -->
+  <div id="recaptcha-container"></div>
+
+  <!-- Top Info Bar -->
   <div class="top-strip">
     <div>
       <span><i class="fa fa-id-card"></i> GSTIN: <b>10DGUPK4899G1ZU</b></span>
@@ -545,10 +533,10 @@
       </a>
 
       <div class="nav-menu">
-        <a href="#about">About Us</a>
         <a href="#products">Surya Wires</a>
-        <a href="#products">LED Lighting</a>
-        <a href="#products">Bisleri Distribution</a>
+        <a href="#products">LED Downlights</a>
+        <a href="#products">Bisleri Distributorship</a>
+        <a href="#about">About & Contact</a>
       </div>
 
       <div class="nav-buttons">
@@ -568,7 +556,7 @@
             <i class="fa fa-shield-alt"></i> Admin Panel
           </button>
           <button class="btn btn-outline" onclick="logoutSession()">
-            <i class="fa fa-sign-out-alt"></i>
+            <i class="fa fa-sign-out-alt"></i> Logout
           </button>
         </div>
       </div>
@@ -653,7 +641,7 @@
       <div class="admin-nav">
         <div>
           <h2>Admin Control Panel (eNiranjan Portal)</h2>
-          <p style="color: var(--text-muted); font-size: 13px;">Logged in as: <b>piyushkrjaiswal99@gmail.com</b></p>
+          <p style="color: var(--text-muted); font-size: 13px;">Logged in as Admin: <b>piyushkrjaiswal99@gmail.com</b></p>
         </div>
         <div>
           <button class="btn btn-primary" onclick="openModal('addProductModal')"><i class="fa fa-plus"></i> Add New Product</button>
@@ -676,17 +664,18 @@
     </div>
   </div>
 
-  <!-- Auth Modal -->
+  <!-- Sign In Modal -->
   <div class="modal" id="authModal">
     <div class="modal-box">
       <button class="modal-close" onclick="closeModal('authModal')">&times;</button>
       
       <h3 style="font-size: 22px; margin-bottom: 6px;">Sign In to Niranjan Electronics</h3>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Choose your sign in option below</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Customer SMS Verification & Admin Sign In</p>
 
-      <form id="mobileForm" onsubmit="handleMobileLogin(event)">
-        <div class="form-group">
-          <label>Customer Mobile Number</label>
+      <!-- Customer Real Mobile OTP -->
+      <form id="mobileForm" onsubmit="handleCustomerMobileAuth(event)">
+        <div class="form-group" id="mobileNumberGroup">
+          <label>Enter Customer Mobile Number</label>
           <div style="display: flex; gap: 8px;">
             <span style="padding: 11px 12px; background: #e2e8f0; border-radius: 6px; font-size: 14px; font-weight: 600;">+91</span>
             <input type="tel" id="userMobile" class="form-control" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
@@ -694,12 +683,12 @@
         </div>
 
         <div class="form-group" id="otpGroup" style="display: none;">
-          <label>Enter 4-Digit OTP (Use: 1234)</label>
-          <input type="text" id="userOtp" class="form-control" placeholder="Enter OTP code" maxlength="4">
+          <label>Enter 6-Digit SMS OTP</label>
+          <input type="text" id="userOtp" class="form-control" placeholder="Enter 6-digit code" maxlength="6">
         </div>
 
         <button type="submit" id="mobileSubmitBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 11px;">
-          Send Verification OTP
+          Send SMS OTP
         </button>
       </form>
 
@@ -707,7 +696,8 @@
         <span>Admin Sign In</span>
       </div>
 
-      <button type="button" class="btn-google" onclick="handleGoogleAdminSignIn()">
+      <!-- Real Google Sign In for Admin -->
+      <button type="button" class="btn-google" onclick="handleRealGoogleAdminSignIn()">
         <svg width="18" height="18" viewBox="0 0 24 24">
           <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
           <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5.1 3.7-8.9z"/>
@@ -717,7 +707,7 @@
         Sign in with Google (Admin)
       </button>
       <p style="font-size: 11px; text-align: center; color: var(--text-muted); margin-top: 8px;">
-        Authorised Email: <b>piyushkrjaiswal99@gmail.com</b>
+        Authorised Admin Email: <b>piyushkrjaiswal99@gmail.com</b>
       </p>
     </div>
   </div>
@@ -773,14 +763,14 @@
           </div>
         </div>
         <p><b>Proprietor:</b> Niranjan Kumar</p>
-        <p>Authorised Distributor for Surya Wires & Bisleri Mineral Water. Providing authentic electrical solutions and sales service across Khagaria.</p>
+        <p>Authorised Distributor for Surya Wires & Bisleri Mineral Water. Supplying electrical cables, lighting solutions, and pure water across Alauli & Khagaria region.</p>
       </div>
 
       <div class="footer-col">
         <h5>Authorised Distribution</h5>
         <p>• Surya Turbo Flex PVC FR Wires</p>
         <p>• Surya Dazzle Maxx Surface LEDs</p>
-        <p>• Bisleri 20L Water Jars Supply</p>
+        <p>• Bisleri 20L Water Jars Bulk Supply</p>
         <p>• Battery, Inverter & TV Repairing</p>
       </div>
 
@@ -797,16 +787,36 @@
     </div>
   </footer>
 
-  <!-- Script Logic -->
+  <!-- Firebase Scripts -->
   <script>
     const ADMIN_EMAIL = "piyushkrjaiswal99@gmail.com";
+
+    // Aapka Exact Firebase Project Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUAa2099assK5mVJPTBe9i5kM4WOEANXI",
+      authDomain: "digitalniranjan0.firebaseapp.com",
+      projectId: "digitalniranjan0",
+      storageBucket: "digitalniranjan0.firebasestorage.app",
+      messagingSenderId: "405859935264",
+      appId: "1:405859935264:web:8b16546690402075690845",
+      measurementId: "G-7C8GZRHS1R"
+    };
+
+    // Firebase Initialize
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Setup Invisible reCAPTCHA for Phone Auth
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      'size': 'invisible'
+    });
 
     const defaultCatalog = [
       {
         id: 1,
         title: "Surya Turbo Flex PVC FR Copper Wire (1.0 sq mm)",
         category: "Surya Wires",
-        price: "Best Wholesale Rate",
+        price: "Wholesale Rate",
         specs: "1100V Flame Retardant (FR) Pure Copper Conductor.",
         img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80"
       },
@@ -823,7 +833,7 @@
         title: "Surya Dazzle Maxx 8W Surface Round LED Downlighter",
         category: "Surya LED",
         price: "₹280",
-        specs: "Compact round ceiling surface downlight with 50 years trust.",
+        specs: "Compact round ceiling surface downlight.",
         img: "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=500&q=80"
       },
       {
@@ -845,12 +855,37 @@
     ];
 
     let catalog = JSON.parse(localStorage.getItem('niranjan_corp_catalog')) || defaultCatalog;
-    let activeSession = JSON.parse(localStorage.getItem('niranjan_corp_session')) || null;
-    let otpSent = false;
+    let confirmationResult = null;
+
+    // Listen to Firebase Auth State Changes
+    auth.onAuthStateChanged((user) => {
+      const guestActions = document.getElementById('guestActions');
+      const loggedInActions = document.getElementById('loggedInActions');
+      const userNameLabel = document.getElementById('userNameLabel');
+      const adminPanelBtn = document.getElementById('adminPanelBtn');
+
+      if (user) {
+        guestActions.style.display = 'none';
+        loggedInActions.style.display = 'flex';
+
+        if (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+          userNameLabel.innerText = "Admin: " + (user.displayName || "Piyush");
+          adminPanelBtn.style.display = 'inline-flex';
+          switchView('admin');
+        } else {
+          userNameLabel.innerText = user.phoneNumber || user.displayName || "Customer";
+          adminPanelBtn.style.display = 'none';
+          switchView('customer');
+        }
+      } else {
+        guestActions.style.display = 'block';
+        loggedInActions.style.display = 'none';
+        switchView('customer');
+      }
+    });
 
     function initApplication() {
       renderCatalog();
-      updateSessionUI();
     }
 
     function renderCatalog() {
@@ -879,75 +914,81 @@
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-    function handleMobileLogin(e) {
+    // Real Mobile OTP Login
+    function handleCustomerMobileAuth(e) {
       e.preventDefault();
-      const mobileInput = document.getElementById('userMobile').value;
+      const mobileNumber = document.getElementById('userMobile').value.trim();
       const otpGroup = document.getElementById('otpGroup');
       const submitBtn = document.getElementById('mobileSubmitBtn');
 
-      if (!otpSent) {
-        otpSent = true;
-        otpGroup.style.display = 'block';
-        submitBtn.innerText = "Verify OTP & Login";
-        alert(`OTP sent to +91 ${mobileInput}. (Demo OTP: 1234)`);
+      if (!confirmationResult) {
+        const fullPhone = "+91" + mobileNumber;
+        const appVerifier = window.recaptchaVerifier;
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Sending Real SMS OTP...";
+
+        auth.signInWithPhoneNumber(fullPhone, appVerifier)
+          .then((result) => {
+            confirmationResult = result;
+            otpGroup.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Verify OTP Code";
+            alert("Aapke mobile number " + fullPhone + " par asli SMS OTP bhej diya gaya hai!");
+          }).catch((error) => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Send SMS OTP";
+            alert("OTP bhejne me samasya: " + error.message);
+          });
       } else {
-        const otpVal = document.getElementById('userOtp').value;
-        if (otpVal === "1234") {
-          activeSession = { name: "+91 " + mobileInput, role: "customer" };
-          localStorage.setItem('niranjan_corp_session', JSON.stringify(activeSession));
-          closeModal('authModal');
-          updateSessionUI();
-          alert("Login successful!");
-        } else {
-          alert("Invalid OTP! Enter 1234");
-        }
+        const code = document.getElementById('userOtp').value.trim();
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Verifying...";
+
+        confirmationResult.confirm(code)
+          .then((result) => {
+            alert("Phone number successfully verified! Welcome to Niranjan Electronics.");
+            closeModal('authModal');
+          }).catch((error) => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Verify OTP Code";
+            alert("Galat OTP! Kripya sahi 6-digit OTP code dalein.");
+          });
       }
     }
 
-    function handleGoogleAdminSignIn() {
-      const consent = confirm(`Continue to sign in with Google Account:\n\n${ADMIN_EMAIL}`);
-      if (consent) {
-        activeSession = {
-          name: "Piyush Kr Jaiswal (Admin)",
-          email: ADMIN_EMAIL,
-          role: "admin"
-        };
-        localStorage.setItem('niranjan_corp_session', JSON.stringify(activeSession));
-        closeModal('authModal');
-        updateSessionUI();
-        switchView('admin');
-        alert("Google Verification Successful. Welcome Admin!");
-      }
-    }
-
-    function updateSessionUI() {
-      const guestActions = document.getElementById('guestActions');
-      const loggedInActions = document.getElementById('loggedInActions');
-      const userNameLabel = document.getElementById('userNameLabel');
-      const adminPanelBtn = document.getElementById('adminPanelBtn');
-
-      if (activeSession) {
-        guestActions.style.display = 'none';
-        loggedInActions.style.display = 'flex';
-        userNameLabel.innerText = activeSession.name;
-        adminPanelBtn.style.display = (activeSession.role === 'admin') ? 'inline-flex' : 'none';
-      } else {
-        guestActions.style.display = 'block';
-        loggedInActions.style.display = 'none';
-        switchView('customer');
-      }
+    // Google Sign-In for Admin
+    function handleRealGoogleAdminSignIn() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+          if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+            alert("Admin Verified: Welcome Piyush!");
+            closeModal('authModal');
+          } else {
+            alert("Access Denied: Aapka email (" + user.email + ") Admin panel ke liye authorised nahi hai.");
+            auth.signOut();
+          }
+        }).catch((error) => {
+          alert("Google Sign-In Error: " + error.message);
+        });
     }
 
     function logoutSession() {
-      activeSession = null;
-      localStorage.removeItem('niranjan_corp_session');
-      updateSessionUI();
+      auth.signOut().then(() => {
+        confirmationResult = null;
+        alert("Aap safely logout ho chuke hain.");
+      });
     }
 
     function switchView(view) {
-      if (view === 'admin' && (!activeSession || activeSession.role !== 'admin')) {
-        alert("Access Denied: Only admin can view this page.");
-        return;
+      const user = auth.currentUser;
+      if (view === 'admin') {
+        if (!user || user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+          alert("Access Denied: Only Admin can access this panel.");
+          return;
+        }
       }
       document.getElementById('customerView').style.display = (view === 'customer') ? 'block' : 'none';
       document.getElementById('adminView').style.display = (view === 'admin') ? 'block' : 'none';
