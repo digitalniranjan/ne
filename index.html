@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title id="tabTitle">Niranjan Electronics | Authorised Distributor</title>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #D8232A;
+      --primary-hover: #b51a20;
+      --accent-gold: #FDB813;
+      --dark-navy: #0F172A;
+      --text-main: #334155;
+      --text-muted: #64748B;
+      --bg-light: #F8FAFC;
+      --border-color: #E2E8F0;
+      --white: #FFFFFF;
+    }
+
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden !important;
+      position: relative;
+      background-color: var(--bg-light);
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; color: var(--dark-navy); }
+
+    /* Welcome Rotating Swastik Preloader */
+    #sitePreloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #0F172A;
+      z-index: 9999999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    #sitePreloader.fade-out {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    .swastik-spin-box {
+      font-size: 65px;
+      color: #FDB813;
+      animation: swastikSpin 1.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+      text-shadow: 0 0 25px rgba(253, 184, 19, 0.7);
+      line-height: 1;
+    }
+    .preloader-text {
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-top: 15px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .preloader-subtext {
+      color: #94A3B8;
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-top: 5px;
+      font-weight: 600;
+      text-align: center;
+    }
+    @keyframes swastikSpin {
+      0% { transform: rotate(0deg) scale(0.85); }
+      50% { transform: rotate(180deg) scale(1.15); }
+      100% { transform: rotate(360deg) scale(0.85); }
+    }
+
+    /* Top Strip */
+    .top-strip {
+      background: var(--dark-navy);
+      color: #94A3B8;
+      font-size: 11px;
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      width: 100%;
+    }
+    .top-strip b { color: white; }
+
+    /* Running Headline Ticker */
+    .ticker-wrap {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 5px 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid var(--primary-color);
+      font-size: 12px;
+      font-weight: 600;
+      width: 100%;
+      position: relative;
+    }
+    .ticker-label {
+      background: var(--primary-color);
+      color: white;
+      padding: 2px 8px;
+      margin-left: 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+    .ticker-marquee {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-content {
+      display: inline-block;
+      padding-left: 100%;
+      animation: tickerAnimation 24s linear infinite;
+    }
+    .ticker-wrap:hover .ticker-content { animation-play-state: paused; }
+    @keyframes tickerAnimation {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    /* Header */
+    header {
+      background: var(--white);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+    }
+    .nav-container {
+      max-width: 1280px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .brand-container {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      gap: 8px;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .nav-menu a {
+      text-decoration: none;
+      color: var(--dark-navy);
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .nav-menu a:hover { color: var(--primary-color); }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn {
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+    }
+    .btn-call { background: #10B981; color: white; }
+    .btn-primary { background: var(--primary-color); color: white; }
+    .btn-outline {
+      border: 1px solid var(--border-color);
+      background: white;
+      color: var(--dark-navy);
+    }
+
+    /* Badges */
+    .icon-badge-btn {
+      position: relative;
+      background: #f1f5f9;
+      color: var(--dark-navy);
+      border: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .badge-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--primary-color);
+      color: white;
+      font-size: 9px;
+      font-weight: 800;
+      border-radius: 50%;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid white;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      color: white;
+      padding: 24px 12px;
+      width: 100%;
+    }
+    .hero-content {
+      max-width: 1280px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+      align-items: center;
+    }
+    .badge-distributor {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 3px 8px;
+      border-radius: 15px;
+      font-size: 10px;
+      color: var(--accent-gold);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .hero-title {
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: white;
+    }
+    .hero-title span { color: var(--primary-color); }
+    .hero-desc {
+      font-size: 12px;
+      color: #94A3B8;
+      margin-bottom: 12px;
+    }
+    .hero-cta { display: flex; gap: 8px; flex-wrap: wrap; }
+    
+    /* Hero Image Card (User/Owner Customizable) */
+    .hero-image-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      width: 100%;
+    }
+    .hero-image-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .banner-caption {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #E2E8F0;
+      font-weight: 600;
+    }
+
+    /* Category Filter & Search */
+    .filter-search-wrap {
+      max-width: 1280px;
+      margin: 12px auto 0;
+      padding: 0 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .search-input-box {
+      position: relative;
+      width: 100%;
+    }
+    .search-input-box input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      background: white;
+    }
+    .search-input-box input:focus { border-color: var(--primary-color); }
+    .search-input-box i {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .category-tabs-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .category-tabs-scroll::-webkit-scrollbar { display: none; }
+    .cat-tab-btn {
+      background: white;
+      border: 1px solid var(--border-color);
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .cat-tab-btn.active, .cat-tab-btn:hover {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    /* Catalog Section (Mobile: EXACTLY 2 PRODUCTS PER ROW) */
+    .catalog-section {
+      max-width: 1280px;
+      margin: auto;
+      padding: 12px 10px 40px;
+      width: 100%;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2 columns strictly on mobile */
+      gap: 10px;
+      width: 100%;
+    }
+    @media (min-width: 768px) {
+      .product-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      .product-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .product-card {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    .card-img-wrap {
+      height: 130px;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 6px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .card-img-wrap img {
+      max-width: 95%;
+      max-height: 95%;
+      object-fit: contain;
+    }
+    .tag-brand {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      background: var(--dark-navy);
+      color: white;
+      font-size: 8px;
+      font-weight: 700;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    .card-body {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .product-category {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .product-title {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 4px;
+      color: var(--dark-navy);
+      height: 30px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .product-specs {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      height: 26px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .card-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 6px;
+    }
+    .product-price { font-size: 13px; font-weight: 800; color: var(--dark-navy); }
+    .card-actions-row {
+      display: flex;
+      gap: 4px;
+      width: 100%;
+    }
+    .card-actions-row .btn {
+      flex: 1;
+      padding: 5px 0;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    /* Store Gallery Section (Photos & Videos) */
+    .gallery-section {
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 25px 12px;
+      width: 100%;
+    }
+    .gallery-container {
+      max-width: 1280px;
+      margin: auto;
+    }
+    .section-title-wrap {
+      margin-bottom: 14px;
+    }
+    .section-title-wrap h3 { font-size: 18px; font-weight: 800; }
+    .section-title-wrap p { font-size: 12px; color: var(--text-muted); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 768px) {
+      .gallery-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    .gallery-item-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .gallery-item-card img, .gallery-item-card video, .gallery-item-card iframe {
+      width: 100%;
+      height: 125px;
+      object-fit: cover;
+      background: black;
+      border: none;
+    }
+    .gallery-item-info {
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--dark-navy);
+    }
+
+    /* Admin View */
+    #adminView {
+      display: none;
+      max-width: 1280px;
+      margin: 15px auto;
+      padding: 0 12px;
+      width: 100%;
+    }
+    .admin-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 14px;
+      border-left: 4px solid var(--primary-color);
+      margin-bottom: 14px;
+      width: 100%;
+      overflow-x: auto;
+    }
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .stat-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .stat-box h4 { font-size: 18px; font-weight: 800; color: var(--primary-color); }
+    .stat-box p { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+
+    .admin-table {
+      width: 100%;
+      min-width: 480px;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+    .admin-table th, .admin-table td {
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      font-size: 11px;
+      text-align: left;
+    }
+    .admin-table th { background: #f8fafc; }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+    .modal.active { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 420px;
+      padding: 16px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 20px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #64748B;
+    }
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; color: var(--dark-navy); }
+    .form-control {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    /* Footer with Automatic Dynamic Logo Box */
+    footer {
+      background: var(--dark-navy);
+      color: #94A3B8;
+      padding: 30px 12px 15px;
+      font-size: 12px;
+      width: 100%;
+    }
+    .footer-container {
+      max-width: 1280px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 20px;
+    }
+    .footer-col h5 { color: white; font-size: 14px; margin-bottom: 8px; }
+    .footer-col p { line-height: 1.5; margin-bottom: 4px; }
+    .footer-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .nav-menu { display: none; }
+      .top-strip { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Rotating Swastik Intro Screen -->
+  <div id="sitePreloader" onclick="dismissPreloader()">
+    <div class="swastik-spin-box">卐</div>
+    <div class="preloader-text">Niranjan Electronics</div>
+    <div class="preloader-subtext">AUTHORISED DISTRIBUTOR</div>
+  </div>
+
+  <!-- Top Strip -->
+  <div class="top-strip">
+    <div>
+      <span><i class="fa fa-id-card"></i> GSTIN: <b id="displayGstin">10DGUPK4899G1ZU</b></span>
+      <span style="margin-left: 8px;"><i class="fa fa-map-marker-alt"></i> <span id="displayAddress">Budhaura, Alauli, Khagaria</span></span>
+    </div>
+    <div>
+      <span>Proprietor: <b id="displayProprietor">Niranjan Kumar</b></span>
+      <span style="margin-left: 8px;"><i class="fa fa-phone"></i> <span id="displayPhoneTop">+91 9931087802</span></span>
+    </div>
+  </div>
+
+  <!-- Running Headline Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-label"><i class="fa fa-bullhorn"></i> Updates</div>
+    <div class="ticker-marquee">
+      <div class="ticker-content" id="displayHeadlineTicker">
+        ⚡ Welcome to Niranjan Electronics: Complete Home Wiring, Surya & Havells Wires, Anchor Switches, DTH Dish, Festive Diwali Lari & Bisleri Water! Call +91 9931087802.
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <a href="javascript:void(0)" onclick="switchView('customer')" class="brand-container">
+        <img id="siteLogo" src="https://raw.githubusercontent.com/digitalniranjan/ne/main/File_00000000bf708211936903e4775bb714.png" alt="Niranjan Electronics" style="max-height: 40px; width: auto; object-fit: contain; border-radius: 4px;">
+        <span id="siteLogoFallback" style="font-family: 'Outfit'; font-size: 18px; font-weight: 800; color: var(--primary-color); display: none;">Niranjan Electronics</span>
+      </a>
+
+      <div class="nav-menu">
+        <a href="#products">Store</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#about">About</a>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="icon-badge-btn" onclick="openModal('notificationModal')" title="Announcements">
+          <i class="fa fa-bell"></i>
+          <span class="badge-dot" id="notiBadgeCount">1</span>
+        </button>
+
+        <button class="icon-badge-btn" onclick="openModal('cartModal')" title="Cart">
+          <i class="fa fa-shopping-cart"></i>
+          <span class="badge-dot" id="cartBadgeCount">0</span>
+        </button>
+
+        <a href="tel:9931087802" id="headerCallBtn" class="btn btn-call">
+          <i class="fa fa-phone"></i> Call
+        </a>
+
+        <div id="guestActions">
+          <button class="btn btn-outline" onclick="openModal('authModal')">
+            <i class="fab fa-google"></i> Sign In
+          </button>
+        </div>
+
+        <div id="loggedInActions" style="display: none; align-items: center; gap: 5px;">
+          <span id="userNameLabel" style="font-weight: 700; font-size: 11px;"></span>
+          <button id="adminPanelBtn" class="btn btn-primary" style="display: none;" onclick="switchView('admin')">
+            <i class="fa fa-shield-alt"></i> Admin
+          </button>
+          <button class="btn btn-outline" onclick="logoutSession()">
+            <i class="fa fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Customer View -->
+  <div id="customerView">
+    <section class="hero-section">
+      <div class="hero-content">
+        <div>
+          <div class="badge-distributor" id="displayBadge">
+            <i class="fa fa-certificate"></i> Authorised Distributor | Surya & Bisleri
+          </div>
+          <h1 class="hero-title" id="displayHeroTitle">
+            Complete Home Wiring, <span>Surya Safety</span> & Pure Bisleri Water
+          </h1>
+          <p class="hero-desc" id="displayHeroDesc">
+            Authorised wholesale distributor of Flame Retardant Copper Wires, Anchor Modular Switches, DTH Dish sets, Festive Diwali LED Lari, and Bulk Bisleri Water.
+          </p>
+          <div class="hero-cta">
+            <a href="tel:9931087802" id="heroCallBtn" class="btn btn-call">
+              <i class="fa fa-phone"></i> Call Helpline
+            </a>
+            <a href="https://wa.me/919931087802" id="heroWaBtn" target="_blank" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.4);">
+              <i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- Customizable Store Banner / Owner Photo Box -->
+        <div class="hero-image-card">
+          <img id="displayHeroImg" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" alt="Store Showcase">
+          <div class="banner-caption" id="displayHeroCaption">Niranjan Electronics: Har Ghar Me Suraksha Aur Vishwas</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search Bar & Category Filter Tabs -->
+    <div class="filter-search-wrap">
+      <div class="search-input-box">
+        <i class="fa fa-search"></i>
+        <input type="text" id="productSearchInput" placeholder="Search product (Wire, Iron, Dish, Lari, Anchor, Pipe, Rod)..." oninput="handleSearchAndFilter()">
+      </div>
+      <div class="category-tabs-scroll" id="categoryTabsContainer">
+        <button class="cat-tab-btn active" onclick="filterCategory('All', this)">All Items</button>
+        <button class="cat-tab-btn" onclick="filterCategory('Wires', this)">Wires & Cables</button>
+        <button class="cat-tab-btn" onclick="filterCategory('DTH', this)">DTH Dish & TV</button>
+        <button class="cat-tab-btn" onclick="filterCategory('Diwali', this)">Diwali Lights / Lari</button>
+        <button class="cat-tab-btn" onclick="filterCategory('Switches', this)">Switches & Board</button>
+        <button class="cat-tab-btn" onclick="filterCategory('Pipes', this)">Pipes & Fittings</button>
+        <button class="cat-tab-btn" onclick="filterCategory('Appliances', this)">Appliances & Rod</button>
+        <button class="cat-tab-btn" onclick="filterCategory('Lighting', this)">LED Lights & Bulbs</button>
+        <button class="cat-tab-btn" onclick="filterCategory('Bisleri', this)">Bisleri Water</button>
+      </div>
+    </div>
+
+    <!-- Products Catalog Section (2 items per row on mobile) -->
+    <section class="catalog-section" id="products">
+      <div class="product-grid" id="productGridContainer"></div>
+    </section>
+
+    <!-- Store & Work Gallery Section (Photos + Videos) -->
+    <section class="gallery-section" id="gallery">
+      <div class="gallery-container">
+        <div class="section-title-wrap">
+          <h3><i class="fa fa-photo-video" style="color: var(--primary-color);"></i> Store Showcase & Work Gallery</h3>
+          <p>Dukaan ka stock, wiring fitting karya aur live video highlights</p>
+        </div>
+        <div class="gallery-grid" id="galleryGridContainer"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Admin Master Control Panel -->
+  <div id="adminView">
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+        <div>
+          <h2>Master Admin Control Desk</h2>
+          <p style="color: var(--text-muted); font-size: 11px;">Admin Account: <b>piyushkrjaiswal99@gmail.com</b></p>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-primary" onclick="openModal('addProductModal')"><i class="fa fa-plus"></i> Add Product</button>
+          <button class="btn btn-outline" onclick="openModal('addGalleryModal')"><i class="fa fa-camera"></i> Add Media</button>
+          <button class="btn btn-outline" onclick="switchView('customer')"><i class="fa fa-store"></i> View Store</button>
+        </div>
+      </div>
+
+      <div class="admin-stats-grid">
+        <div class="stat-box">
+          <p>Products</p>
+          <h4 id="statTotalCatalog">0</h4>
+        </div>
+        <div class="stat-box">
+          <p>Gallery Items</p>
+          <h4 id="statTotalGallery">0</h4>
+        </div>
+        <div class="stat-box">
+          <p>Orders</p>
+          <h4 id="statTotalOrders">0</h4>
+        </div>
+        <div class="stat-box">
+          <p>Site Visits</p>
+          <h4 id="statTotalVisits">--</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banner & Owner Photo Customizer -->
+    <div class="admin-card">
+      <h3><i class="fa fa-image" style="color: var(--primary-color);"></i> Update Main Store Banner / Owner Photo</h3>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">"Har Ghar Me Suraksha Aur Vishwas" wale photo card me apni khud ki ya dukan ki photo lagayein:</p>
+      <form onsubmit="saveBannerCustomization(event)">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+          <div class="form-group">
+            <label>Upload Photo Directly From Phone</label>
+            <input type="file" id="bannerFileInput" class="form-control" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label>Or Image Link (Optional)</label>
+            <input type="url" id="bannerUrlInput" class="form-control" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>Caption Text</label>
+            <input type="text" id="bannerCaptionInput" class="form-control" placeholder="Niranjan Electronics: ...">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 4px;"><i class="fa fa-save"></i> Save Banner Photo</button>
+      </form>
+    </div>
+
+    <!-- Inventory Manager (Add/Remove Products) -->
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3><i class="fa fa-boxes" style="color: var(--primary-color);"></i> Manage Products (Direct Photo Upload)</h3>
+        <button class="btn btn-primary" onclick="openModal('addProductModal')"><i class="fa fa-plus"></i> Add New Product</button>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Photo</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Gallery Manager -->
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3><i class="fa fa-photo-video" style="color: var(--primary-color);"></i> Manage Gallery (Photos & Videos)</h3>
+        <button class="btn btn-primary" onclick="openModal('addGalleryModal')"><i class="fa fa-plus"></i> Add Gallery Media</button>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Preview</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminGalleryTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Live Customer Orders Queue -->
+    <div class="admin-card">
+      <h3 style="margin-bottom:8px;"><i class="fa fa-receipt" style="color: var(--primary-color);"></i> Customer Orders</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Address & Phone</th>
+            <th>Time</th>
+            <th>Dispatch</th>
+          </tr>
+        </thead>
+        <tbody id="adminOrdersTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Announcement & Headline Ticker Manager -->
+    <div class="admin-card">
+      <h3 style="margin-bottom:8px;"><i class="fa fa-bullhorn" style="color: var(--primary-color);"></i> Running Headline & Notices</h3>
+      <div class="form-group">
+        <label>Running Headline (Marquee Text)</label>
+        <div style="display:flex; gap:6px;">
+          <input type="text" id="adminTickerInput" class="form-control" placeholder="Update headline text...">
+          <button type="button" class="btn btn-primary" onclick="updateHeadlineTicker()"><i class="fa fa-sync"></i> Save</button>
+        </div>
+      </div>
+
+      <hr style="margin: 10px 0; border: none; border-top: 1px solid var(--border-color);">
+
+      <form onsubmit="postNewNotification(event)">
+        <div class="form-group">
+          <label>Broadcast Notice / Offer</label>
+          <input type="text" id="noticeTitle" class="form-control" placeholder="Notice Title" required style="margin-bottom:5px;">
+          <input type="text" id="noticeContent" class="form-control" placeholder="Notice Message" required style="margin-bottom:6px;">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane"></i> Broadcast Notice</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Store Settings & Logo URL -->
+    <div class="admin-card">
+      <h3 style="margin-bottom:8px;"><i class="fa fa-sliders-h" style="color: var(--primary-color);"></i> Store Settings</h3>
+      <form onsubmit="saveGlobalSettings(event)">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:8px;">
+          <div class="form-group">
+            <label>Logo Direct URL</label>
+            <input type="url" id="settingLogoUrl" class="form-control" placeholder="https://.../logo.png">
+          </div>
+          <div class="form-group">
+            <label>Or Upload Logo File</label>
+            <input type="file" id="settingLogoFileInput" class="form-control" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label>Contact Phone</label>
+            <input type="text" id="settingPhone" class="form-control" placeholder="9931087802">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="text" id="settingWa" class="form-control" placeholder="919931087802">
+          </div>
+          <div class="form-group">
+            <label>Proprietor Name</label>
+            <input type="text" id="settingProprietor" class="form-control" placeholder="Niranjan Kumar">
+          </div>
+          <div class="form-group">
+            <label>GSTIN</label>
+            <input type="text" id="settingGstin" class="form-control" placeholder="10DGUPK4899G1ZU">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 6px;"><i class="fa fa-save"></i> Save Settings</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Cart Modal -->
+  <div class="modal" id="cartModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('cartModal')">&times;</button>
+      <h3 style="font-size: 16px; margin-bottom: 8px;"><i class="fa fa-shopping-cart" style="color: var(--primary-color);"></i> Shopping Cart</h3>
+      <div id="cartItemsList" style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;"></div>
+      <div id="cartTotalSummary" style="font-weight: 700; margin-bottom: 10px; border-top: 1px solid var(--border-color); padding-top: 6px;"></div>
+      <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 8px;" onclick="openOrderCheckoutModal()">
+        Proceed to Order
+      </button>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="modal" id="checkoutModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('checkoutModal')">&times;</button>
+      <h3 style="font-size: 16px; margin-bottom: 6px;">Delivery Details</h3>
+      <form onsubmit="submitCustomerOrder(event)">
+        <div class="form-group">
+          <label>Delivery Address / Landmark</label>
+          <input type="text" id="orderAddress" class="form-control" placeholder="Village / Landmark" required>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="orderPhone" class="form-control" placeholder="10-digit number" pattern="[0-9]{10}" required>
+        </div>
+        <div class="form-group">
+          <label>Special Note (Optional)</label>
+          <input type="text" id="orderNotes" class="form-control" placeholder="e.g. Call before delivery">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+          Confirm Order
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Modal -->
+  <div class="modal" id="notificationModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('notificationModal')">&times;</button>
+      <h3 style="font-size: 16px; margin-bottom: 5px;"><i class="fa fa-bell" style="color: var(--primary-color);"></i> Store Announcements</h3>
+      <div class="noti-box-container" id="notiCenterContainer"></div>
+    </div>
+  </div>
+
+  <!-- Google Auth Modal -->
+  <div class="modal" id="authModal">
+    <div class="modal-box" style="text-align: center;">
+      <button class="modal-close" onclick="closeModal('authModal')">&times;</button>
+      <div style="width: 40px; height: 40px; border-radius: 50%; background: #fee2e2; color: var(--primary-color); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 18px;">
+        <i class="fa fa-shield-alt"></i>
+      </div>
+      <h3 style="font-size: 16px; margin-bottom: 4px;">Sign In with Google</h3>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Fast & secure 1-click Google authentication</p>
+      <button type="button" class="btn btn-outline" style="width: 100%; justify-content: center; padding: 9px;" onclick="handleGoogleSignIn()">
+        <i class="fab fa-google" style="color:#EA4335;"></i> Continue with Google
+      </button>
+    </div>
+  </div>
+
+  <!-- Add Product Modal (With Direct File Upload) -->
+  <div class="modal" id="addProductModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('addProductModal')">&times;</button>
+      <h3 style="margin-bottom: 10px; font-size: 16px;">Add New Product</h3>
+      <form onsubmit="handleProductCreation(event)">
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" id="pName" class="form-control" placeholder="e.g. Havells Life Line 1.5 sq mm" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="pCategory" class="form-control">
+            <option value="Wires">Wires & Cables</option>
+            <option value="DTH">DTH Dish & TV</option>
+            <option value="Diwali">Diwali Lights / Lari</option>
+            <option value="Switches">Switches & Board</option>
+            <option value="Pipes">Pipes & Fittings</option>
+            <option value="Appliances">Appliances & Rod</option>
+            <option value="Lighting">LED Lights & Bulbs</option>
+            <option value="Bisleri">Bisleri Water</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Price</label>
+          <input type="text" id="pPrice" class="form-control" placeholder="e.g. ₹450 or Wholesale Rate" required>
+        </div>
+        
+        <!-- Direct File Upload Option -->
+        <div class="form-group">
+          <label><i class="fa fa-upload"></i> Upload Photo From Phone (No Link Needed)</label>
+          <input type="file" id="pImgFile" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>Or Web Image Link (Optional)</label>
+          <input type="url" id="pImgUrl" class="form-control" placeholder="https://...">
+        </div>
+
+        <div class="form-group">
+          <label>Specifications / Description</label>
+          <input type="text" id="pSpecs" class="form-control" placeholder="100% Pure Copper, Genuine Brand">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+          Save to Store Catalog
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Gallery Media Modal (Photos & Videos) -->
+  <div class="modal" id="addGalleryModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('addGalleryModal')">&times;</button>
+      <h3 style="margin-bottom: 10px; font-size: 16px;">Add Media to Store Gallery</h3>
+      <form onsubmit="handleGalleryCreation(event)">
+        <div class="form-group">
+          <label>Title / Work Caption</label>
+          <input type="text" id="gTitle" class="form-control" placeholder="e.g. Surya Wires Wholesale Stock / House Wiring Work" required>
+        </div>
+        <div class="form-group">
+          <label>Media Type</label>
+          <select id="gType" class="form-control" onchange="toggleGalleryTypeInputs()">
+            <option value="photo_file">Upload Photo from Phone</option>
+            <option value="photo_url">Photo Web Link (URL)</option>
+            <option value="video_file">Upload Video from Phone (MP4)</option>
+            <option value="video_embed">YouTube / Video Embed Link</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="gFileInputWrap">
+          <label>Select File from Mobile</label>
+          <input type="file" id="gFileInput" class="form-control" accept="image/*,video/*">
+        </div>
+
+        <div class="form-group" id="gUrlInputWrap" style="display: none;">
+          <label>Web Link / YouTube Embed URL</label>
+          <input type="url" id="gUrlInput" class="form-control" placeholder="https://...">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+          Add to Gallery
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer with Automatic Synchronized Logo Box -->
+  <footer id="about">
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="footer-logo-wrap">
+          <img id="footerLogo" src="https://raw.githubusercontent.com/digitalniranjan/ne/main/File_00000000bf708211936903e4775bb714.png" alt="Niranjan Electronics" style="max-height: 38px; width: auto; object-fit: contain; border-radius: 4px;">
+          <h4 style="color: white; font-size: 16px; font-weight: 800;">Niranjan ELECTRONICS</h4>
+        </div>
+        <p><b>Proprietor:</b> <span id="displayFooterProprietor">Niranjan Kumar</span></p>
+        <p>Authorised Distributor for Surya Turbo Flex Wires, Surya Lighting & Bisleri Mineral Water across Alauli & Khagaria region.</p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Authorised Distribution</h5>
+        <p>• Surya Turbo Flex PVC FR Wires</p>
+        <p>• Surya Dazzle Maxx Surface LEDs</p>
+        <p>• DTH Ku-Band Dish & Cable Accessories</p>
+        <p>• Bisleri 20L Bulk Water Jars Supply</p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Location & Contact</h5>
+        <p><i class="fa fa-map-marker-alt" style="color: var(--primary-color);"></i> <span id="displayFooterAddress">Main Road, Budhaura, Alauli, Khagaria</span></p>
+        <p><i class="fa fa-phone" style="color: #10B981;"></i> <span id="displayFooterPhone">+91 9931087802</span></p>
+        <p><i class="fa fa-file-invoice" style="color: var(--accent-gold);"></i> GSTIN: <span id="displayFooterGstin">10DGUPK4899G1ZU</span></p>
+      </div>
+    </div>
+    <div style="text-align:center; padding-top: 14px; font-size: 11px;">© 2026 Niranjan Electronics. All Rights Reserved.</div>
+  </footer>
+
+  <!-- Complete Logic Script -->
+  <script>
+    const ADMIN_EMAIL = "piyushkrjaiswal99@gmail.com";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUAa2099assK5mVJPTBe9i5kM4WOEANXI",
+      authDomain: "digitalniranjan0.firebaseapp.com",
+      projectId: "digitalniranjan0",
+      storageBucket: "digitalniranjan0.firebasestorage.app",
+      messagingSenderId: "405859935264",
+      appId: "1:405859935264:web:8b16546690402075690845",
+      measurementId: "G-7C8GZRHS1R"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    const defaultSettings = {
+      themeColor: "#D8232A",
+      logoUrl: "https://raw.githubusercontent.com/digitalniranjan/ne/main/File_00000000bf708211936903e4775bb714.png",
+      bannerImg: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80",
+      bannerCaption: "Niranjan Electronics: Har Ghar Me Suraksha Aur Vishwas",
+      phone: "9931087802",
+      wa: "919931087802",
+      proprietor: "Niranjan Kumar",
+      gstin: "10DGUPK4899G1ZU",
+      address: "Main Road, Budhaura, Alauli (Khagaria), Bihar",
+      headlineTicker: "⚡ Welcome to Niranjan Electronics: Complete Home Wiring, Surya & Havells Wires, Anchor Switches, DTH Dish, Festive Diwali Lari & Bisleri Water! Call +91 9931087802."
+    };
+
+    // Full Complete Electrical & Electronics Catalog
+    const masterInitialCatalog = [
+      {
+        id: 1,
+        title: "Surya Turbo Flex PVC FR Copper Wire (1.0 sq mm)",
+        category: "Wires",
+        price: "Wholesale Rate",
+        specs: "100% Pure Copper Conductor, 1100V Flame Retardant (FR). Ideal for lights and fans.",
+        img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 2,
+        title: "Surya Turbo Flex PVC FR Copper Wire (1.5 sq mm)",
+        category: "Wires",
+        price: "Wholesale Rate",
+        specs: "Heavy grade multi-strand copper wire for power sockets and house wiring.",
+        img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 3,
+        title: "Surya Turbo Flex PVC FR Copper Wire (2.5 sq mm)",
+        category: "Wires",
+        price: "Wholesale Rate",
+        specs: "High capacity load wire for AC, Geyser, and heavy kitchen appliances.",
+        img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 4,
+        title: "Havells Life Line Plus S3 HRFR Copper Wire (1.5 sq mm)",
+        category: "Wires",
+        price: "Best Deal",
+        specs: "100% conductivity, Heat Resistant & Flame Retardant, certified 90m coil.",
+        img: "https://images.unsplash.com/photo-1601524909162-ae8725290836?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 5,
+        title: "DTH Ku-Band Satellite Dish Antenna (Complete Set)",
+        category: "DTH",
+        price: "₹650",
+        specs: "Heavy solid dish with wall bracket, screws & LNB holder.",
+        img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 6,
+        title: "Universal Single Output Ku-Band LNBF (Full HD 4K)",
+        category: "DTH",
+        price: "₹180",
+        specs: "Ultra low noise 0.1dB, high gain signal reception for all DTH.",
+        img: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 7,
+        title: "RG-6 Heavy Duty Coaxial Cable (Dish Wire Roll)",
+        category: "DTH",
+        price: "₹12 / meter",
+        specs: "Dual shield copper-braided coaxial wire with minimal signal loss.",
+        img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 8,
+        title: "Surya Jag-Mag Festive LED Decorative Lari (45M)",
+        category: "Diwali",
+        price: "₹190",
+        specs: "Multi-color bright Diwali string light with durable copper wire.",
+        img: "https://images.unsplash.com/photo-1513297887119-d46091b24bfa?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 9,
+        title: "Surya Golden Warm-White LED Pixel Festive Lari",
+        category: "Diwali",
+        price: "₹220",
+        specs: "Bright golden fairy light for home roof, courtyard and balcony.",
+        img: "https://images.unsplash.com/photo-1543258103-a62bdc069871?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 10,
+        title: "Anchor Penta 6A Piano Switch & 3-Pin Socket Set",
+        category: "Switches",
+        price: "₹65",
+        specs: "Spark resistant silver inlay contacts, safety shutters, ISI certified.",
+        img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 11,
+        title: "Heavy Brass Ring Batten / Angle Bulb Holder",
+        category: "Switches",
+        price: "₹30",
+        specs: "Heavy brass plunger and threading for all standard B22 base bulbs.",
+        img: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 12,
+        title: "Heavy Duty PVC Electrical Conduit Pipe (20mm & 25mm)",
+        category: "Pipes",
+        price: "Wholesale Bundle",
+        specs: "Rigid fire retardant PVC pipe for concealed wall conduit fitting.",
+        img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 13,
+        title: "Steelgrip / Anchor PVC Electrical Insulation Tape",
+        category: "Pipes",
+        price: "₹15",
+        specs: "Self-adhesive, moisture proof, heat proof insulation tape.",
+        img: "https://images.unsplash.com/photo-1601524909162-ae8725290836?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 14,
+        title: "Eveready / Havells 1500W Immersion Water Heating Rod",
+        category: "Appliances",
+        price: "₹480",
+        specs: "Shock-proof plastic handle, nickel plated anti-corrosive rod.",
+        img: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 15,
+        title: "Havells / Surya Heavyweight Dry Electric Iron (1000W)",
+        category: "Appliances",
+        price: "₹850",
+        specs: "Non-stick coated soleplate with automatic thermal cut-off.",
+        img: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 16,
+        title: "Stainless Steel 1.8L Electric Hot Water Kettle",
+        category: "Appliances",
+        price: "₹620",
+        specs: "Rapid boil 1500W heating with auto cut-off safety feature.",
+        img: "https://images.unsplash.com/photo-1594213114663-dd95639f7535?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 17,
+        title: "Surya Dazzle Maxx 15W Surface Round LED Downlighter",
+        category: "Lighting",
+        price: "₹450",
+        specs: "Surface mount ceiling fitting, 25,000 hours life, surge protection.",
+        img: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 18,
+        title: "Surya 9W Inverter Emergency LED Rechargeable Bulb",
+        category: "Lighting",
+        price: "₹340",
+        specs: "4 Hours backup during power cuts with auto-charging battery.",
+        img: "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 19,
+        title: "Bisleri Packaged Drinking Water (20 Litre Bulk Jar)",
+        category: "Bisleri",
+        price: "₹80 / Jar",
+        specs: "Authorised 100% original 10-step purified mineral water supply.",
+        img: "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=500&q=80"
+      }
+    ];
+
+    // Initial Gallery Media Items
+    const defaultGallery = [
+      {
+        id: 1,
+        title: "Surya Turbo Flex Wires Stock Arrival",
+        type: "image",
+        url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 2,
+        title: "House Wiring & Distribution Board Setup",
+        type: "image",
+        url: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 3,
+        title: "Bisleri Bulk Water Dispatch Hub",
+        type: "image",
+        url: "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 4,
+        title: "Diwali Decorative LED Lights Display",
+        type: "image",
+        url: "https://images.unsplash.com/photo-1513297887119-d46091b24bfa?auto=format&fit=crop&w=500&q=80"
+      }
+    ];
+
+    let catalog = JSON.parse(localStorage.getItem('niranjan_corp_catalog')) || masterInitialCatalog;
+    let gallery = JSON.parse(localStorage.getItem('niranjan_store_gallery')) || defaultGallery;
+    let currentSettings = JSON.parse(localStorage.getItem('niranjan_site_settings')) || defaultSettings;
+    let cart = JSON.parse(localStorage.getItem('niranjan_user_cart')) || [];
+    let orders = JSON.parse(localStorage.getItem('niranjan_admin_orders')) || [];
+    let activeFilter = "All";
+    let searchQuery = "";
+
+    let notifications = JSON.parse(localStorage.getItem('niranjan_store_notis')) || [
+      { id: 1, title: "Store Online", content: "Welcome to Niranjan Electronics! 2-column mobile catalog is live.", time: "Just Now" }
+    ];
+
+    function dismissPreloader() {
+      const loader = document.getElementById('sitePreloader');
+      if (loader) {
+        loader.classList.add('fade-out');
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 400);
+      }
+    }
+
+    function applySettings() {
+      const logoImg = document.getElementById('siteLogo');
+      const footerLogo = document.getElementById('footerLogo');
+      const logoFallback = document.getElementById('siteLogoFallback');
+
+      const activeLogo = currentSettings.logoUrl || "https://raw.githubusercontent.com/digitalniranjan/ne/main/File_00000000bf708211936903e4775bb714.png";
+      
+      logoImg.src = activeLogo;
+      footerLogo.src = activeLogo;
+      logoImg.style.display = 'block';
+      footerLogo.style.display = 'block';
+
+      // Banner Customization
+      document.getElementById('displayHeroImg').src = currentSettings.bannerImg || "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80";
+      document.getElementById('displayHeroCaption').innerText = currentSettings.bannerCaption || "Niranjan Electronics: Har Ghar Me Suraksha Aur Vishwas";
+      document.getElementById('bannerCaptionInput').value = currentSettings.bannerCaption || "";
+
+      // Contact & Top Info
+      document.getElementById('displayGstin').innerText = currentSettings.gstin;
+      document.getElementById('displayFooterGstin').innerText = currentSettings.gstin;
+      document.getElementById('displayAddress').innerText = currentSettings.address;
+      document.getElementById('displayFooterAddress').innerText = currentSettings.address;
+      document.getElementById('displayProprietor').innerText = currentSettings.proprietor;
+      document.getElementById('displayFooterProprietor').innerText = currentSettings.proprietor;
+      document.getElementById('displayPhoneTop').innerText = "+91 " + currentSettings.phone;
+      document.getElementById('displayFooterPhone').innerText = "+91 " + currentSettings.phone;
+
+      document.getElementById('headerCallBtn').href = "tel:" + currentSettings.phone;
+      document.getElementById('heroCallBtn').href = "tel:" + currentSettings.phone;
+      document.getElementById('heroWaBtn').href = "https://wa.me/" + currentSettings.wa;
+
+      document.getElementById('displayHeadlineTicker').innerText = currentSettings.headlineTicker;
+      document.getElementById('adminTickerInput').value = currentSettings.headlineTicker;
+
+      document.getElementById('settingLogoUrl').value = currentSettings.logoUrl || "";
+      document.getElementById('settingPhone').value = currentSettings.phone || "";
+      document.getElementById('settingWa').value = currentSettings.wa || "";
+      document.getElementById('settingProprietor').value = currentSettings.proprietor || "";
+      document.getElementById('settingGstin').value = currentSettings.gstin || "";
+    }
+
+    // Save Banner / Owner Photo Customization
+    function saveBannerCustomization(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('bannerFileInput');
+      const urlInput = document.getElementById('bannerUrlInput').value.trim();
+      const captionInput = document.getElementById('bannerCaptionInput').value.trim();
+
+      if (captionInput) currentSettings.bannerCaption = captionInput;
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          currentSettings.bannerImg = evt.target.result; // Base64 direct image
+          localStorage.setItem('niranjan_site_settings', JSON.stringify(currentSettings));
+          applySettings();
+          alert("Banner photo updated successfully!");
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else if (urlInput) {
+        currentSettings.bannerImg = urlInput;
+        localStorage.setItem('niranjan_site_settings', JSON.stringify(currentSettings));
+        applySettings();
+        alert("Banner photo updated successfully!");
+      } else {
+        localStorage.setItem('niranjan_site_settings', JSON.stringify(currentSettings));
+        applySettings();
+        alert("Banner caption updated!");
+      }
+    }
+
+    function saveGlobalSettings(e) {
+      e.preventDefault();
+      const logoFile = document.getElementById('settingLogoFileInput');
+      const logoUrl = document.getElementById('settingLogoUrl').value.trim();
+
+      currentSettings.phone = document.getElementById('settingPhone').value.trim();
+      currentSettings.wa = document.getElementById('settingWa').value.trim();
+      currentSettings.proprietor = document.getElementById('settingProprietor').value.trim();
+      currentSettings.gstin = document.getElementById('settingGstin').value.trim();
+
+      if (logoFile.files && logoFile.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          currentSettings.logoUrl = evt.target.result;
+          localStorage.setItem('niranjan_site_settings', JSON.stringify(currentSettings));
+          applySettings();
+          alert("Settings & Logo updated successfully!");
+        };
+        reader.readAsDataURL(logoFile.files[0]);
+      } else {
+        if (logoUrl) currentSettings.logoUrl = logoUrl;
+        localStorage.setItem('niranjan_site_settings', JSON.stringify(currentSettings));
+        applySettings();
+        alert("Settings saved successfully!");
+      }
+    }
+
+    function updateHeadlineTicker() {
+      const val = document.getElementById('adminTickerInput').value.trim();
+      if (!val) return;
+      currentSettings.headlineTicker = val;
+      localStorage.setItem('niranjan_site_settings', JSON.stringify(currentSettings));
+      document.getElementById('displayHeadlineTicker').innerText = val;
+      alert("Headline updated live!");
+    }
+
+    function postNewNotification(e) {
+      e.preventDefault();
+      const newNoti = {
+        id: Date.now(),
+        title: document.getElementById('noticeTitle').value,
+        content: document.getElementById('noticeContent').value,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      notifications.unshift(newNoti);
+      localStorage.setItem('niranjan_store_notis', JSON.stringify(notifications));
+      renderNotifications();
+      document.getElementById('noticeTitle').value = "";
+      document.getElementById('noticeContent').value = "";
+      alert("Notice broadcasted!");
+    }
+
+    function renderNotifications() {
+      document.getElementById('notiBadgeCount').innerText = notifications.length;
+      const box = document.getElementById('notiCenterContainer');
+      box.innerHTML = notifications.map(n => `
+        <div style="background:#f8fafc; border:1px solid var(--border-color); border-left:3px solid var(--primary-color); padding:8px; border-radius:5px; margin-bottom:8px;">
+          <h5 style="font-size:12px; margin-bottom:2px;">${n.title}</h5>
+          <p style="font-size:11px; color:var(--text-muted);">${n.content}</p>
+          <small style="font-size:9px; color:#94a3b8;">${n.time}</small>
+        </div>
+      `).join('');
+    }
+
+    /* Filter & Search */
+    function filterCategory(cat, btnElement) {
+      activeFilter = cat;
+      document.querySelectorAll('.cat-tab-btn').forEach(b => b.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+      renderCatalog();
+    }
+
+    function handleSearchAndFilter() {
+      searchQuery = document.getElementById('productSearchInput').value.toLowerCase().trim();
+      renderCatalog();
+    }
+
+    function renderCatalog() {
+      const container = document.getElementById('productGridContainer');
+      const countStat = document.getElementById('statTotalCatalog');
+      if (countStat) countStat.innerText = catalog.length;
+
+      let filtered = catalog.filter(item => {
+        const matchesCategory = (activeFilter === "All") || (item.category === activeFilter);
+        const matchesSearch = item.title.toLowerCase().includes(searchQuery) || 
+                              item.specs.toLowerCase().includes(searchQuery) ||
+                              item.category.toLowerCase().includes(searchQuery);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 30px 10px; background: white; border-radius: 8px; border: 1.5px dashed var(--border-color);">
+            <i class="fa fa-search" style="font-size: 28px; color: var(--text-muted); margin-bottom: 8px;"></i>
+            <h4 style="color: var(--dark-navy); font-size: 14px;">Koi product nahi mila.</h4>
+            <p style="font-size: 11px; color: var(--text-muted);">"All Items" par tap karein ya doosra naam search karein.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(p => `
+        <div class="product-card">
+          <div class="card-img-wrap">
+            <span class="tag-brand">ORIGINAL</span>
+            <img src="${p.img}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/200x150?text=Product'">
+          </div>
+          <div class="card-body">
+            <span class="product-category">${p.category}</span>
+            <h4 class="product-title" title="${p.title}">${p.title}</h4>
+            <p class="product-specs">${p.specs}</p>
+            <div class="card-footer">
+              <span class="product-price">${p.price}</span>
+              <div class="card-actions-row">
+                <button onclick="addToCart(${p.id})" class="btn btn-outline" title="Add to Cart">
+                  <i class="fa fa-cart-plus"></i> Cart
+                </button>
+                <button onclick="quickOrderNow(${p.id})" class="btn btn-primary">
+                  Order
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* Store Gallery System (Photos + Videos) */
+    function renderGallery() {
+      const container = document.getElementById('galleryGridContainer');
+      const countStat = document.getElementById('statTotalGallery');
+      if (countStat) countStat.innerText = gallery.length;
+
+      if (gallery.length === 0) {
+        container.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #94a3b8; padding: 20px;">Gallery me koi media nahi hai.</p>`;
+        return;
+      }
+
+      container.innerHTML = gallery.map(item => {
+        let mediaHtml = '';
+        if (item.type === 'video' || item.type === 'video_file') {
+          mediaHtml = `<video controls playsinline preload="metadata"><source src="${item.url}" type="video/mp4"></video>`;
+        } else if (item.type === 'embed') {
+          mediaHtml = `<iframe src="${item.url}" allowfullscreen></iframe>`;
+        } else {
+          mediaHtml = `<img src="${item.url}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/300x200?text=Gallery'">`;
+        }
+        return `
+          <div class="gallery-item-card">
+            ${mediaHtml}
+            <div class="gallery-item-info">${item.title}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleGalleryTypeInputs() {
+      const type = document.getElementById('gType').value;
+      const fileWrap = document.getElementById('gFileInputWrap');
+      const urlWrap = document.getElementById('gUrlInputWrap');
+
+      if (type === 'photo_file' || type === 'video_file') {
+        fileWrap.style.display = 'block';
+        urlWrap.style.display = 'none';
+      } else {
+        fileWrap.style.display = 'none';
+        urlWrap.style.display = 'block';
+      }
+    }
+
+    function handleGalleryCreation(e) {
+      e.preventDefault();
+      const title = document.getElementById('gTitle').value.trim();
+      const type = document.getElementById('gType').value;
+      const fileInput = document.getElementById('gFileInput');
+      const urlInput = document.getElementById('gUrlInput').value.trim();
+
+      if ((type === 'photo_file' || type === 'video_file') && fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          gallery.unshift({
+            id: Date.now(),
+            title: title,
+            type: type === 'video_file' ? 'video' : 'image',
+            url: evt.target.result
+          });
+          localStorage.setItem('niranjan_store_gallery', JSON.stringify(gallery));
+          renderGallery();
+          renderAdminGalleryTable();
+          closeModal('addGalleryModal');
+          alert("Gallery media uploaded!");
+        };
+        reader.readAsDataURL(file);
+      } else if (urlInput) {
+        let finalType = 'image';
+        let finalUrl = urlInput;
+        if (type === 'video_embed' || urlInput.includes('youtube.com') || urlInput.includes('youtu.be')) {
+          finalType = 'embed';
+          if (urlInput.includes('watch?v=')) {
+            finalUrl = urlInput.replace('watch?v=', 'embed/');
+          }
+        }
+        gallery.unshift({
+          id: Date.now(),
+          title: title,
+          type: finalType,
+          url: finalUrl
+        });
+        localStorage.setItem('niranjan_store_gallery', JSON.stringify(gallery));
+        renderGallery();
+        renderAdminGalleryTable();
+        closeModal('addGalleryModal');
+        alert("Gallery item added!");
+      } else {
+        alert("Kripya photo/video file chunein ya link dalein!");
+      }
+    }
+
+    function renderAdminGalleryTable() {
+      const tbody = document.getElementById('adminGalleryTableBody');
+      if (gallery.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8;">Gallery khaali hai.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = gallery.map(g => `
+        <tr>
+          <td><small>${g.type}</small></td>
+          <td><b>${g.title}</b></td>
+          <td>${g.type.toUpperCase()}</td>
+          <td>
+            <button onclick="removeGalleryItem(${g.id})" style="color:var(--primary-color); border:none; background:none; cursor:pointer; font-weight:bold;">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function removeGalleryItem(id) {
+      if (confirm("Kya aap ise gallery se hatana chahte hain?")) {
+        gallery = gallery.filter(g => g.id !== id);
+        localStorage.setItem('niranjan_store_gallery', JSON.stringify(gallery));
+        renderGallery();
+        renderAdminGalleryTable();
+      }
+    }
+
+    /* Cart & Order Engine */
+    function addToCart(productId) {
+      const product = catalog.find(p => p.id === productId);
+      if (!product) return;
+      cart.push(product);
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+      alert(product.title + " added to Cart!");
+    }
+
+    function quickOrderNow(productId) {
+      const product = catalog.find(p => p.id === productId);
+      if (!product) return;
+      cart = [product];
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+      openOrderCheckoutModal();
+    }
+
+    function updateCartUI() {
+      document.getElementById('cartBadgeCount').innerText = cart.length;
+      const list = document.getElementById('cartItemsList');
+      if (cart.length === 0) {
+        list.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:15px;">Your cart is empty.</p>`;
+        document.getElementById('cartTotalSummary').innerText = "";
+        return;
+      }
+      list.innerHTML = cart.map((item, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #f1f5f9;">
+          <div>
+            <b>${item.title}</b>
+            <div style="font-size:10px; color:var(--text-muted);">${item.price}</div>
+          </div>
+          <button onclick="removeFromCart(${idx})" style="color:red; border:none; background:none; cursor:pointer;"><i class="fa fa-trash"></i></button>
+        </div>
+      `).join('');
+      document.getElementById('cartTotalSummary').innerText = "Total: " + cart.length + " item(s)";
+    }
+
+    function removeFromCart(idx) {
+      cart.splice(idx, 1);
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function openOrderCheckoutModal() {
+      if (cart.length === 0) {
+        alert("Pehle cart me product add karein!");
+        return;
+      }
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Order karne se pehle Sign In karein!");
+        closeModal('cartModal');
+        openModal('authModal');
+        return;
+      }
+      closeModal('cartModal');
+      openModal('checkoutModal');
+    }
+
+    function submitCustomerOrder(e) {
+      e.preventDefault();
+      const user = auth.currentUser;
+      const orderData = {
+        orderId: "NE-" + Math.floor(100000 + Math.random() * 900000),
+        userName: user.displayName || "Google User",
+        userEmail: user.email,
+        phone: document.getElementById('orderPhone').value.trim(),
+        address: document.getElementById('orderAddress').value.trim(),
+        notes: document.getElementById('orderNotes').value.trim(),
+        items: cart.map(i => i.title + " (" + i.price + ")").join(", "),
+        time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+      };
+
+      orders.unshift(orderData);
+      localStorage.setItem('niranjan_admin_orders', JSON.stringify(orders));
+
+      const waMsg = encodeURIComponent(
+        "⚡ NAYA ORDER AAYA HAI!\n\n" +
+        "Order ID: " + orderData.orderId + "\n" +
+        "Customer: " + orderData.userName + "\n" +
+        "Phone: " + orderData.phone + "\n" +
+        "Address: " + orderData.address + "\n" +
+        "Items: " + orderData.items
+      );
+
+      const mailtoLink = "mailto:" + ADMIN_EMAIL + "?subject=New Order " + orderData.orderId + "&body=" + waMsg;
+
+      cart = [];
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+      closeModal('checkoutModal');
+
+      alert("Order Confirmed! Order ID: " + orderData.orderId);
+      window.open("https://wa.me/91" + currentSettings.wa + "?text=" + waMsg, '_blank');
+      window.location.href = mailtoLink;
+    }
+
+    function renderAdminOrders() {
+      const tbody = document.getElementById('adminOrdersTableBody');
+      document.getElementById('statTotalOrders').innerText = orders.length;
+
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#94a3b8;">Koi naya order nahi aaya hai.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td><b style="color:var(--primary-color);">${o.orderId}</b></td>
+          <td><b>${o.userName}</b><br><small>${o.userEmail}</small></td>
+          <td>${o.items}</td>
+          <td>${o.address}<br>Tel: ${o.phone}</td>
+          <td>${o.time}</td>
+          <td>
+            <a href="https://wa.me/91${o.phone}" target="_blank" class="btn btn-call" style="font-size:10px; padding:3px 6px;">WhatsApp</a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    /* Direct Photo Upload & Product Creation */
+    function handleProductCreation(e) {
+      e.preventDefault();
+      const pName = document.getElementById('pName').value.trim();
+      const pCategory = document.getElementById('pCategory').value;
+      const pPrice = document.getElementById('pPrice').value.trim();
+      const pSpecs = document.getElementById('pSpecs').value.trim();
+      const imgFile = document.getElementById('pImgFile');
+      const imgUrl = document.getElementById('pImgUrl').value.trim();
+
+      function saveProduct(finalImg) {
+        const newProduct = {
+          id: Date.now(),
+          title: pName,
+          category: pCategory,
+          price: pPrice,
+          img: finalImg || 'https://via.placeholder.com/300x200?text=Product',
+          specs: pSpecs
+        };
+        catalog.unshift(newProduct);
+        localStorage.setItem('niranjan_corp_catalog', JSON.stringify(catalog));
+        renderAdminTable();
+        renderCatalog();
+        closeModal('addProductModal');
+        alert("Product safalta-purvak add ho gaya!");
+      }
+
+      if (imgFile.files && imgFile.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          saveProduct(evt.target.result); // Base64 direct image string
+        };
+        reader.readAsDataURL(imgFile.files[0]);
+      } else {
+        saveProduct(imgUrl);
+      }
+    }
+
+    function renderAdminTable() {
+      const tbody = document.getElementById('adminTableBody');
+      const countStat = document.getElementById('statTotalCatalog');
+      if (countStat) countStat.innerText = catalog.length;
+
+      if (catalog.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:15px;">Catalog khaali hai.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = catalog.map(p => `
+        <tr>
+          <td><img src="${p.img}" width="35" height="30" style="object-fit:cover; border-radius:3px;"></td>
+          <td><b>${p.title}</b></td>
+          <td>${p.category}</td>
+          <td>${p.price}</td>
+          <td>
+            <button onclick="removeProduct(${p.id})" style="color:var(--primary-color); border:none; background:none; cursor:pointer; font-weight:bold; font-size:12px;">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function removeProduct(id) {
+      if (confirm("Kya aap sach me is product ko hatana chahte hain?")) {
+        catalog = catalog.filter(p => p.id !== id);
+        localStorage.setItem('niranjan_corp_catalog', JSON.stringify(catalog));
+        renderAdminTable();
+        renderCatalog();
+      }
+    }
+
+    /* Google Auth & Controls */
+    function handleGoogleSignIn() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(() => closeModal('authModal'))
+        .catch(err => alert("Sign In Error: " + err.message));
+    }
+
+    auth.onAuthStateChanged((user) => {
+      const guestActions = document.getElementById('guestActions');
+      const loggedInActions = document.getElementById('loggedInActions');
+      const userNameLabel = document.getElementById('userNameLabel');
+      const adminPanelBtn = document.getElementById('adminPanelBtn');
+
+      if (user) {
+        guestActions.style.display = 'none';
+        loggedInActions.style.display = 'flex';
+        if (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+          userNameLabel.innerText = "Admin: " + (user.displayName || "Piyush");
+          adminPanelBtn.style.display = 'inline-flex';
+          switchView('admin');
+        } else {
+          userNameLabel.innerText = user.displayName || "Customer";
+          adminPanelBtn.style.display = 'none';
+          switchView('customer');
+        }
+      } else {
+        guestActions.style.display = 'block';
+        loggedInActions.style.display = 'none';
+        switchView('customer');
+      }
+    });
+
+    function logoutSession() {
+      auth.signOut().then(() => alert("Safely logged out."));
+    }
+
+    function switchView(view) {
+      const user = auth.currentUser;
+      if (view === 'admin') {
+        if (!user || user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+          alert("Sirf Admin hi access kar sakte hain.");
+          return;
+        }
+      }
+      document.getElementById('customerView').style.display = (view === 'customer') ? 'block' : 'none';
+      document.getElementById('adminView').style.display = (view === 'admin') ? 'block' : 'none';
+      if (view === 'admin') {
+        renderAdminTable();
+        renderAdminGalleryTable();
+        renderAdminOrders();
+      }
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    // App Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      applySettings();
+      renderCatalog();
+      renderGallery();
+      renderNotifications();
+      updateCartUI();
+      renderAdminOrders();
+
+      let visits = parseInt(localStorage.getItem('niranjan_site_visits') || "180") + 1;
+      localStorage.setItem('niranjan_site_visits', visits);
+      document.getElementById('statTotalVisits').innerText = visits;
+
+      setTimeout(dismissPreloader, 1400);
+    });
+  </script>
+</body>
+</html>
