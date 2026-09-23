@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title id="tabTitle">Niranjan Electronics | Authorised Distributor</title>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #D8232A;
+      --primary-hover: #b51a20;
+      --accent-gold: #FDB813;
+      --dark-navy: #0F172A;
+      --text-main: #334155;
+      --text-muted: #64748B;
+      --bg-light: #F8FAFC;
+      --border-color: #E2E8F0;
+      --white: #FFFFFF;
+    }
+
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden !important;
+      position: relative;
+      background-color: var(--bg-light);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; color: var(--dark-navy); }
+
+    /* Welcome Rotating Swastik Preloader */
+    #sitePreloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #0F172A;
+      z-index: 9999999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #sitePreloader.fade-out {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    .swastik-spin-box {
+      font-size: 65px;
+      color: #FDB813;
+      animation: swastikSpin 1.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+      text-shadow: 0 0 25px rgba(253, 184, 19, 0.7);
+      line-height: 1;
+    }
+    .preloader-text {
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-top: 15px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .preloader-subtext {
+      color: #94A3B8;
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-top: 5px;
+      font-weight: 600;
+      text-align: center;
+    }
+    @keyframes swastikSpin {
+      0% { transform: rotate(0deg) scale(0.85); }
+      50% { transform: rotate(180deg) scale(1.15); }
+      100% { transform: rotate(360deg) scale(0.85); }
+    }
+
+    /* Top Strip */
+    .top-strip {
+      background: var(--dark-navy);
+      color: #94A3B8;
+      font-size: 12px;
+      padding: 6px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      width: 100%;
+    }
+    .top-strip b { color: white; }
+
+    /* Running Headline / Marquee Bar */
+    .ticker-wrap {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 6px 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid var(--primary-color);
+      font-size: 12px;
+      font-weight: 600;
+      width: 100%;
+      position: relative;
+    }
+    .ticker-label {
+      background: var(--primary-color);
+      color: white;
+      padding: 2px 10px;
+      margin-left: 10px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+    .ticker-marquee {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-content {
+      display: inline-block;
+      padding-left: 100%;
+      animation: tickerAnimation 22s linear infinite;
+    }
+    .ticker-wrap:hover .ticker-content { animation-play-state: paused; }
+    @keyframes tickerAnimation {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    /* Header */
+    header {
+      background: var(--white);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+    }
+    .nav-container {
+      max-width: 1280px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .brand-container {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      gap: 8px;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .nav-menu a {
+      text-decoration: none;
+      color: var(--dark-navy);
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .nav-menu a:hover { color: var(--primary-color); }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+    }
+    .btn-call { background: #10B981; color: white; }
+    .btn-primary { background: var(--primary-color); color: white; }
+    .btn-outline {
+      border: 1px solid var(--border-color);
+      background: white;
+      color: var(--dark-navy);
+    }
+
+    /* Badges */
+    .icon-badge-btn {
+      position: relative;
+      background: #f1f5f9;
+      color: var(--dark-navy);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .badge-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--primary-color);
+      color: white;
+      font-size: 9px;
+      font-weight: 800;
+      border-radius: 50%;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid white;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      color: white;
+      padding: 35px 15px;
+      width: 100%;
+    }
+    .hero-content {
+      max-width: 1280px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 25px;
+      align-items: center;
+    }
+    .badge-distributor {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--accent-gold);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .hero-title {
+      font-size: 26px;
+      line-height: 1.25;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: white;
+      word-break: break-word;
+    }
+    .hero-title span { color: var(--primary-color); }
+    .hero-desc {
+      font-size: 14px;
+      color: #94A3B8;
+      margin-bottom: 18px;
+    }
+    .hero-cta { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-image-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      width: 100%;
+    }
+    .hero-image-card img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    /* Catalog */
+    .catalog-section {
+      max-width: 1280px;
+      margin: auto;
+      padding: 30px 15px 50px;
+      width: 100%;
+    }
+    .section-header {
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+    .section-header h3 { font-size: 22px; font-weight: 800; }
+    .section-header p { font-size: 13px; color: var(--text-muted); }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      width: 100%;
+    }
+    .product-card {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-img-wrap {
+      height: 170px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .card-img-wrap img {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+    }
+    .tag-brand {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: var(--dark-navy);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    .card-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .product-category {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .product-title {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 6px;
+      color: var(--dark-navy);
+    }
+    .product-specs {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      flex-grow: 1;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+      padding-top: 10px;
+      gap: 6px;
+    }
+    .product-price { font-size: 15px; font-weight: 800; color: var(--dark-navy); }
+
+    /* Admin View */
+    #adminView {
+      display: none;
+      max-width: 1280px;
+      margin: 20px auto;
+      padding: 0 15px;
+      width: 100%;
+    }
+    .admin-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 16px;
+      border-left: 4px solid var(--primary-color);
+      margin-bottom: 18px;
+      width: 100%;
+      overflow-x: auto;
+    }
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .stat-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .stat-box h4 { font-size: 20px; font-weight: 800; color: var(--primary-color); }
+    .stat-box p { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+
+    .admin-table {
+      width: 100%;
+      min-width: 500px;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .admin-table th, .admin-table td {
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      font-size: 12px;
+      text-align: left;
+    }
+    .admin-table th { background: #f8fafc; }
+
+    /* Modal Standard */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+    .modal.active { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 440px;
+      padding: 20px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 15px;
+      font-size: 22px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #64748B;
+    }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; color: var(--dark-navy); }
+    .form-control {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    footer {
+      background: var(--dark-navy);
+      color: #94A3B8;
+      padding: 35px 15px 15px;
+      font-size: 12px;
+      width: 100%;
+    }
+    .footer-container {
+      max-width: 1280px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 20px;
+    }
+    .footer-col h5 { color: white; font-size: 15px; margin-bottom: 10px; }
+    .footer-col p { line-height: 1.6; margin-bottom: 5px; }
+
+    /* Strict Mobile Viewport Fix */
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .nav-menu { display: none; }
+      .top-strip { flex-direction: column; align-items: flex-start; }
+      .hero-title { font-size: 22px; }
+      .product-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Rotating Swastik Intro Screen -->
+  <div id="sitePreloader" onclick="dismissPreloader()">
+    <div class="swastik-spin-box">卐</div>
+    <div class="preloader-text">Niranjan Electronics</div>
+    <div class="preloader-subtext">AUTHORISED DISTRIBUTOR</div>
+  </div>
+
+  <!-- Top Strip -->
+  <div class="top-strip">
+    <div>
+      <span><i class="fa fa-id-card"></i> GSTIN: <b id="displayGstin">10DGUPK4899G1ZU</b></span>
+      <span style="margin-left: 10px;"><i class="fa fa-map-marker-alt"></i> <span id="displayAddress">Budhaura, Alauli, Khagaria</span></span>
+    </div>
+    <div>
+      <span>Proprietor: <b id="displayProprietor">Niranjan Kumar</b></span>
+      <span style="margin-left: 10px;"><i class="fa fa-phone"></i> <span id="displayPhoneTop">+91 9931087802</span></span>
+    </div>
+  </div>
+
+  <!-- Running Headline Ticker (No Horizontal Overflow) -->
+  <div class="ticker-wrap">
+    <div class="ticker-label"><i class="fa fa-bullhorn"></i> Updates</div>
+    <div class="ticker-marquee">
+      <div class="ticker-content" id="displayHeadlineTicker">
+        ⚡ Welcome to Niranjan Electronics: Authorised Distributor for Surya Turbo Flex FR Copper Wires & Bisleri Mineral Water! Special wholesale rates available. Call +91 9931087802.
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <a href="javascript:void(0)" onclick="switchView('customer')" class="brand-container">
+        <img id="siteLogo" src="File_00000000bf708211936903e4775bb714.png" alt="Niranjan Electronics" style="max-height: 42px; width: auto; object-fit: contain; border-radius: 4px; display: none;">
+        <span id="siteLogoFallback" style="font-family: 'Outfit'; font-size: 19px; font-weight: 800; color: var(--primary-color);">Niranjan Electronics</span>
+      </a>
+
+      <div class="nav-menu">
+        <a href="#products">Surya Wires</a>
+        <a href="#products">LED Downlights</a>
+        <a href="#products">Bisleri Supply</a>
+        <a href="#about">Contact</a>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="icon-badge-btn" onclick="openModal('notificationModal')" title="Announcements">
+          <i class="fa fa-bell"></i>
+          <span class="badge-dot" id="notiBadgeCount">1</span>
+        </button>
+
+        <button class="icon-badge-btn" onclick="openModal('cartModal')" title="Cart">
+          <i class="fa fa-shopping-cart"></i>
+          <span class="badge-dot" id="cartBadgeCount">0</span>
+        </button>
+
+        <a href="tel:9931087802" id="headerCallBtn" class="btn btn-call">
+          <i class="fa fa-phone"></i> Call
+        </a>
+
+        <div id="guestActions">
+          <button class="btn btn-outline" onclick="openModal('authModal')">
+            <i class="fab fa-google"></i> Sign In
+          </button>
+        </div>
+
+        <div id="loggedInActions" style="display: none; align-items: center; gap: 6px;">
+          <span id="userNameLabel" style="font-weight: 700; font-size: 12px;"></span>
+          <button id="adminPanelBtn" class="btn btn-primary" style="display: none;" onclick="switchView('admin')">
+            <i class="fa fa-shield-alt"></i> Admin
+          </button>
+          <button class="btn btn-outline" onclick="logoutSession()">
+            <i class="fa fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Customer View -->
+  <div id="customerView">
+    <section class="hero-section">
+      <div class="hero-content">
+        <div>
+          <div class="badge-distributor" id="displayBadge">
+            <i class="fa fa-certificate"></i> Authorised Distributor | Surya & Bisleri
+          </div>
+          <h1 class="hero-title" id="displayHeroTitle">
+            Powering Homes With <span>Surya Safety</span> & Pure Bisleri Water
+          </h1>
+          <p class="hero-desc" id="displayHeroDesc">
+            Direct authorised supply of flame retardant copper wires, LED fittings, and bulk packaged drinking water jars for Khagaria & Alauli region.
+          </p>
+          <div class="hero-cta">
+            <a href="tel:9931087802" id="heroCallBtn" class="btn btn-call" style="padding: 9px 18px;">
+              <i class="fa fa-phone"></i> Call Order Helpline
+            </a>
+            <a href="https://wa.me/919931087802" id="heroWaBtn" target="_blank" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.4); padding: 9px 18px;">
+              <i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-image-card">
+          <img id="displayHeroImg" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" alt="Surya Showcase">
+          <p style="margin-top: 8px; font-size: 12px; color: #CBD5E1;">
+            <b>Surya Wires:</b> Har Nirmaan Me Suraksha Ka Bharosa
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catalog -->
+    <section class="catalog-section" id="products">
+      <div class="section-header">
+        <h3>Distribution Portfolio & Products</h3>
+        <p>Click "Add to Cart" or "Order Now" to place direct orders</p>
+      </div>
+
+      <div class="product-grid" id="productGridContainer"></div>
+    </section>
+  </div>
+
+  <!-- Admin Master Control Panel -->
+  <div id="adminView">
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2>Master Admin Control Desk</h2>
+          <p style="color: var(--text-muted); font-size: 12px;">Admin: <b>piyushkrjaiswal99@gmail.com</b></p>
+        </div>
+        <button class="btn btn-outline" onclick="switchView('customer')"><i class="fa fa-store"></i> View Live Store</button>
+      </div>
+
+      <div class="admin-stats-grid">
+        <div class="stat-box">
+          <p>Orders</p>
+          <h4 id="statTotalOrders">0</h4>
+        </div>
+        <div class="stat-box">
+          <p>Active Users</p>
+          <h4 id="statActiveUsers">3</h4>
+        </div>
+        <div class="stat-box">
+          <p>Site Visits</p>
+          <h4 id="statTotalVisits">--</h4>
+        </div>
+        <div class="stat-box">
+          <p>Logins</p>
+          <h4 id="statTotalLogins">--</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Customer Orders Queue -->
+    <div class="admin-card">
+      <h3 style="margin-bottom:8px;"><i class="fa fa-receipt" style="color: var(--primary-color);"></i> Customer Orders</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Address & Phone</th>
+            <th>Time</th>
+            <th>Dispatch</th>
+          </tr>
+        </thead>
+        <tbody id="adminOrdersTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Announcement & Headline Ticker Manager -->
+    <div class="admin-card">
+      <h3 style="margin-bottom:8px;"><i class="fa fa-bullhorn" style="color: var(--primary-color);"></i> Running Headline & Notices</h3>
+      <div class="form-group">
+        <label>Running Headline (Marquee Text)</label>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="adminTickerInput" class="form-control" placeholder="Update headline text...">
+          <button type="button" class="btn btn-primary" onclick="updateHeadlineTicker()"><i class="fa fa-sync"></i> Save</button>
+        </div>
+      </div>
+
+      <hr style="margin: 12px 0; border: none; border-top: 1px solid var(--border-color);">
+
+      <form onsubmit="postNewNotification(event)">
+        <div class="form-group">
+          <label>Broadcast Notice / Offer</label>
+          <input type="text" id="noticeTitle" class="form-control" placeholder="Notice Title" required style="margin-bottom:6px;">
+          <input type="text" id="noticeContent" class="form-control" placeholder="Notice Message" required style="margin-bottom:8px;">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane"></i> Broadcast Notice</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Theme & Colors Manager -->
+    <div class="admin-card">
+      <h3 style="margin-bottom:8px;"><i class="fa fa-palette" style="color: var(--primary-color);"></i> Store Theme Color</h3>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+        <button class="btn" style="background: #D8232A; color:white;" onclick="applyThemeColor('#D8232A')">Surya Red</button>
+        <button class="btn" style="background: #0284C7; color:white;" onclick="applyThemeColor('#0284C7')">Bisleri Blue</button>
+        <button class="btn" style="background: #059669; color:white;" onclick="applyThemeColor('#059669')">Green</button>
+        <button class="btn" style="background: #0F172A; color:white;" onclick="applyThemeColor('#0F172A')">Dark</button>
+        <input type="color" id="themeColorPicker" value="#D8232A" onchange="applyThemeColor(this.value)" style="width: 35px; height: 32px; border:none; cursor:pointer;">
+      </div>
+    </div>
+
+    <!-- Store Settings & Logo URL -->
+    <div class="admin-card">
+      <h3 style="margin-bottom:8px;"><i class="fa fa-sliders-h" style="color: var(--primary-color);"></i> Store Settings</h3>
+      <form onsubmit="saveGlobalSettings(event)">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+          <div class="form-group">
+            <label>Logo Direct URL</label>
+            <input type="url" id="settingLogoUrl" class="form-control" placeholder="https://.../logo.png">
+          </div>
+          <div class="form-group">
+            <label>Contact Phone</label>
+            <input type="text" id="settingPhone" class="form-control" placeholder="9931087802">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="text" id="settingWa" class="form-control" placeholder="919931087802">
+          </div>
+          <div class="form-group">
+            <label>Proprietor Name</label>
+            <input type="text" id="settingProprietor" class="form-control" placeholder="Niranjan Kumar">
+          </div>
+          <div class="form-group">
+            <label>GSTIN</label>
+            <input type="text" id="settingGstin" class="form-control" placeholder="10DGUPK4899G1ZU">
+          </div>
+          <div class="form-group">
+            <label>Store Address</label>
+            <input type="text" id="settingAddress" class="form-control" placeholder="Main Road, Budhaura...">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 6px;"><i class="fa fa-save"></i> Save Settings</button>
+      </form>
+    </div>
+
+    <!-- Live Visitors Log Table -->
+    <div class="admin-card">
+      <h3 style="margin-bottom:8px;"><i class="fa fa-user-check" style="color: var(--primary-color);"></i> Google Sign-in Logs</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody id="userLogsTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Inventory Manager -->
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3><i class="fa fa-boxes" style="color: var(--primary-color);"></i> Catalog Items</h3>
+        <button class="btn btn-primary" onclick="openModal('addProductModal')"><i class="fa fa-plus"></i> Add Item</button>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Cart Modal -->
+  <div class="modal" id="cartModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('cartModal')">&times;</button>
+      <h3 style="font-size: 18px; margin-bottom: 10px;"><i class="fa fa-shopping-cart" style="color: var(--primary-color);"></i> Shopping Cart</h3>
+      <div id="cartItemsList" style="max-height: 220px; overflow-y: auto; margin-bottom: 12px;"></div>
+      <div id="cartTotalSummary" style="font-weight: 700; margin-bottom: 12px; border-top: 1px solid var(--border-color); padding-top: 8px;"></div>
+      <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;" onclick="openOrderCheckoutModal()">
+        Proceed to Order
+      </button>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="modal" id="checkoutModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('checkoutModal')">&times;</button>
+      <h3 style="font-size: 18px; margin-bottom: 6px;">Delivery Details</h3>
+      <form onsubmit="submitCustomerOrder(event)">
+        <div class="form-group">
+          <label>Delivery Address</label>
+          <input type="text" id="orderAddress" class="form-control" placeholder="Village / Landmark" required>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="orderPhone" class="form-control" placeholder="10-digit number" pattern="[0-9]{10}" required>
+        </div>
+        <div class="form-group">
+          <label>Notes (Optional)</label>
+          <input type="text" id="orderNotes" class="form-control" placeholder="Any instruction">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+          Confirm Order
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Modal -->
+  <div class="modal" id="notificationModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('notificationModal')">&times;</button>
+      <h3 style="font-size: 18px; margin-bottom: 5px;"><i class="fa fa-bell" style="color: var(--primary-color);"></i> Store Announcements</h3>
+      <div class="noti-box-container" id="notiCenterContainer"></div>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div class="modal" id="authModal">
+    <div class="modal-box" style="text-align: center;">
+      <button class="modal-close" onclick="closeModal('authModal')">&times;</button>
+      <div style="width: 45px; height: 45px; border-radius: 50%; background: #fee2e2; color: var(--primary-color); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px;">
+        <i class="fa fa-shield-alt"></i>
+      </div>
+      <h3 style="font-size: 18px; margin-bottom: 4px;">Sign In with Google</h3>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Fast, secure 1-click Google sign in</p>
+      <button type="button" class="btn btn-outline" style="width: 100%; justify-content: center; padding: 10px;" onclick="handleGoogleSignIn()">
+        <i class="fab fa-google" style="color:#EA4335;"></i> Continue with Google
+      </button>
+    </div>
+  </div>
+
+  <!-- Add Product Modal -->
+  <div class="modal" id="addProductModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('addProductModal')">&times;</button>
+      <h3 style="margin-bottom: 12px;">Add Product</h3>
+      <form onsubmit="handleProductCreation(event)">
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" id="pName" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="pCategory" class="form-control">
+            <option value="Surya Wires">Surya Wires</option>
+            <option value="Surya LED">Surya LED</option>
+            <option value="Bisleri Distribution">Bisleri Distribution</option>
+            <option value="Appliances">Appliances</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Price</label>
+          <input type="text" id="pPrice" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Image URL</label>
+          <input type="url" id="pImg" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Specifications</label>
+          <input type="text" id="pSpecs" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+          Add to Catalog
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer id="about">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4 style="color: white; font-size: 18px; font-weight: 800; margin-bottom: 8px;">Niranjan ELECTRONICS</h4>
+        <p><b>Proprietor:</b> <span id="displayFooterProprietor">Niranjan Kumar</span></p>
+        <p>Authorised Distributor for Surya Wires & Bisleri Mineral Water across Alauli & Khagaria region.</p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Authorised Distribution</h5>
+        <p>• Surya Turbo Flex PVC FR Wires</p>
+        <p>• Surya Dazzle Maxx Surface LEDs</p>
+        <p>• Bisleri 20L Water Jars Bulk Supply</p>
+        <p>• Battery, Inverter & TV Repairing</p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Location & Contact</h5>
+        <p><i class="fa fa-map-marker-alt" style="color: var(--primary-color);"></i> <span id="displayFooterAddress">Main Road, Budhaura, Alauli, Khagaria</span></p>
+        <p><i class="fa fa-phone" style="color: #10B981;"></i> <span id="displayFooterPhone">+91 9931087802</span></p>
+        <p><i class="fa fa-file-invoice" style="color: var(--accent-gold);"></i> GSTIN: <span id="displayFooterGstin">10DGUPK4899G1ZU</span></p>
+      </div>
+    </div>
+    <div style="text-align:center; padding-top: 15px; font-size: 11px;">© 2026 Niranjan Electronics. All Rights Reserved.</div>
+  </footer>
+
+  <!-- Script Logic -->
+  <script>
+    const ADMIN_EMAIL = "piyushkrjaiswal99@gmail.com";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUAa2099assK5mVJPTBe9i5kM4WOEANXI",
+      authDomain: "digitalniranjan0.firebaseapp.com",
+      projectId: "digitalniranjan0",
+      storageBucket: "digitalniranjan0.firebasestorage.app",
+      messagingSenderId: "405859935264",
+      appId: "1:405859935264:web:8b16546690402075690845",
+      measurementId: "G-7C8GZRHS1R"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    const defaultSettings = {
+      themeColor: "#D8232A",
+      logoUrl: "File_00000000bf708211936903e4775bb714.png",
+      phone: "9931087802",
+      wa: "919931087802",
+      proprietor: "Niranjan Kumar",
+      gstin: "10DGUPK4899G1ZU",
+      address: "Main Road, Budhaura, Alauli (Khagaria), Bihar",
+      headlineTicker: "⚡ Welcome to Niranjan Electronics: Authorised Distributor for Surya Turbo Flex FR Copper Wires & Bisleri Mineral Water! Call +91 9931087802."
+    };
+
+    const defaultCatalog = [
+      {
+        id: 1,
+        title: "Surya Turbo Flex PVC FR Copper Wire (1.0 sq mm)",
+        category: "Surya Wires",
+        price: "Wholesale Rate",
+        specs: "1100V Flame Retardant (FR) Pure Copper Conductor.",
+        img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 2,
+        title: "Surya Dazzle Maxx 15W Surface Round LED Downlighter",
+        category: "Surya LED",
+        price: "₹450",
+        specs: "Eco-friendly, 25,000 Hours life, RoHS Certified.",
+        img: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 3,
+        title: "Surya Dazzle Maxx 8W Surface Round LED Downlighter",
+        category: "Surya LED",
+        price: "₹280",
+        specs: "Compact round ceiling surface downlight.",
+        img: "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 4,
+        title: "Bisleri Packaged Mineral Water (20 Litre Bulk Jar)",
+        category: "Bisleri Distribution",
+        price: "₹80 / Jar",
+        specs: "Authorised mineral water supply for retail and events.",
+        img: "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        id: 5,
+        title: "Pure Sine Wave Home Inverter & Tubular Battery Set",
+        category: "Appliances",
+        price: "Wholesale Quote",
+        specs: "Sales, installation and certified repair services.",
+        img: "https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?auto=format&fit=crop&w=500&q=80"
+      }
+    ];
+
+    const defaultNotifications = [
+      {
+        id: 1,
+        title: "Authorised Surya Roshni Hub Launched",
+        content: "Niranjan Electronics is now live with certified Surya Turbo Flex cables and original Bisleri water delivery across Alauli & Khagaria.",
+        time: "Just Now"
+      }
+    ];
+
+    let currentSettings = JSON.parse(localStorage.getItem('niranjan_site_settings')) || defaultSettings;
+    let catalog = JSON.parse(localStorage.getItem('niranjan_corp_catalog')) || defaultCatalog;
+    let cart = JSON.parse(localStorage.getItem('niranjan_user_cart')) || [];
+    let orders = JSON.parse(localStorage.getItem('niranjan_admin_orders')) || [];
+    let notifications = JSON.parse(localStorage.getItem('niranjan_store_notis')) || defaultNotifications;
+
+    function dismissPreloader() {
+      const loader = document.getElementById('sitePreloader');
+      if (loader) {
+        loader.classList.add('fade-out');
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 500);
+      }
+    }
+
+    function applyThemeColor(color) {
+      document.documentElement.style.setProperty('--primary-color', color);
+      currentSettings.themeColor = color;
+      localStorage.setItem('niranjan_site_settings', JSON.stringify(currentSettings));
+      const picker = document.getElementById('themeColorPicker');
+      if (picker) picker.value = color;
+    }
+
+    function applySettings() {
+      if (currentSettings.themeColor) applyThemeColor(currentSettings.themeColor);
+
+      const logoImg = document.getElementById('siteLogo');
+      const logoFallback = document.getElementById('siteLogoFallback');
+      if (currentSettings.logoUrl) {
+        logoImg.src = currentSettings.logoUrl;
+        logoImg.onload = function() {
+          this.style.display = 'block';
+          if (logoFallback) logoFallback.style.display = 'none';
+        };
+        logoImg.onerror = function() {
+          this.style.display = 'none';
+          if (logoFallback) logoFallback.style.display = 'block';
+        };
+      }
+
+      document.getElementById('displayGstin').innerText = currentSettings.gstin;
+      document.getElementById('displayFooterGstin').innerText = currentSettings.gstin;
+      document.getElementById('displayAddress').innerText = currentSettings.address;
+      document.getElementById('displayFooterAddress').innerText = currentSettings.address;
+      document.getElementById('displayProprietor').innerText = currentSettings.proprietor;
+      document.getElementById('displayFooterProprietor').innerText = currentSettings.proprietor;
+      document.getElementById('displayPhoneTop').innerText = "+91 " + currentSettings.phone;
+      document.getElementById('displayFooterPhone').innerText = "+91 " + currentSettings.phone;
+
+      document.getElementById('headerCallBtn').href = "tel:" + currentSettings.phone;
+      document.getElementById('heroCallBtn').href = "tel:" + currentSettings.phone;
+      document.getElementById('heroWaBtn').href = "https://wa.me/" + currentSettings.wa;
+
+      document.getElementById('displayHeadlineTicker').innerText = currentSettings.headlineTicker;
+      document.getElementById('adminTickerInput').value = currentSettings.headlineTicker;
+
+      document.getElementById('settingLogoUrl').value = currentSettings.logoUrl || "";
+      document.getElementById('settingPhone').value = currentSettings.phone || "";
+      document.getElementById('settingWa').value = currentSettings.wa || "";
+      document.getElementById('settingProprietor').value = currentSettings.proprietor || "";
+      document.getElementById('settingGstin').value = currentSettings.gstin || "";
+      document.getElementById('settingAddress').value = currentSettings.address || "";
+    }
+
+    function saveGlobalSettings(e) {
+      e.preventDefault();
+      currentSettings.logoUrl = document.getElementById('settingLogoUrl').value.trim();
+      currentSettings.phone = document.getElementById('settingPhone').value.trim();
+      currentSettings.wa = document.getElementById('settingWa').value.trim();
+      currentSettings.proprietor = document.getElementById('settingProprietor').value.trim();
+      currentSettings.gstin = document.getElementById('settingGstin').value.trim();
+      currentSettings.address = document.getElementById('settingAddress').value.trim();
+
+      localStorage.setItem('niranjan_site_settings', JSON.stringify(currentSettings));
+      applySettings();
+      alert("Settings saved!");
+    }
+
+    function updateHeadlineTicker() {
+      const val = document.getElementById('adminTickerInput').value.trim();
+      if (!val) return;
+      currentSettings.headlineTicker = val;
+      localStorage.setItem('niranjan_site_settings', JSON.stringify(currentSettings));
+      document.getElementById('displayHeadlineTicker').innerText = val;
+      alert("Headline updated!");
+    }
+
+    function postNewNotification(e) {
+      e.preventDefault();
+      const newNoti = {
+        id: Date.now(),
+        title: document.getElementById('noticeTitle').value,
+        content: document.getElementById('noticeContent').value,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      notifications.unshift(newNoti);
+      localStorage.setItem('niranjan_store_notis', JSON.stringify(notifications));
+      renderNotifications();
+      document.getElementById('noticeTitle').value = "";
+      document.getElementById('noticeContent').value = "";
+      alert("Notification sent!");
+    }
+
+    function renderNotifications() {
+      document.getElementById('notiBadgeCount').innerText = notifications.length;
+      const box = document.getElementById('notiCenterContainer');
+      box.innerHTML = notifications.map(n => `
+        <div class="noti-item">
+          <h5><i class="fa fa-info-circle" style="color:var(--primary-color);"></i> ${n.title}</h5>
+          <p>${n.content}</p>
+          <small>${n.time}</small>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(productId) {
+      const product = catalog.find(p => p.id === productId);
+      if (!product) return;
+      cart.push(product);
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+      alert(product.title + " added to Cart!");
+    }
+
+    function quickOrderNow(productId) {
+      const product = catalog.find(p => p.id === productId);
+      if (!product) return;
+      cart = [product];
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+      openOrderCheckoutModal();
+    }
+
+    function updateCartUI() {
+      document.getElementById('cartBadgeCount').innerText = cart.length;
+      const list = document.getElementById('cartItemsList');
+      if (cart.length === 0) {
+        list.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:15px;">Your cart is empty.</p>`;
+        document.getElementById('cartTotalSummary').innerText = "";
+        return;
+      }
+      list.innerHTML = cart.map((item, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #f1f5f9;">
+          <div>
+            <b>${item.title}</b>
+            <div style="font-size:11px; color:var(--text-muted);">${item.price}</div>
+          </div>
+          <button onclick="removeFromCart(${idx})" style="color:red; border:none; background:none; cursor:pointer;"><i class="fa fa-trash"></i></button>
+        </div>
+      `).join('');
+      document.getElementById('cartTotalSummary').innerText = "Total: " + cart.length + " item(s)";
+    }
+
+    function removeFromCart(idx) {
+      cart.splice(idx, 1);
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function openOrderCheckoutModal() {
+      if (cart.length === 0) {
+        alert("Pehle cart me koi product add karein!");
+        return;
+      }
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Order karne se pehle Sign In karein!");
+        closeModal('cartModal');
+        openModal('authModal');
+        return;
+      }
+      closeModal('cartModal');
+      openModal('checkoutModal');
+    }
+
+    function submitCustomerOrder(e) {
+      e.preventDefault();
+      const user = auth.currentUser;
+      const orderData = {
+        orderId: "NE-" + Math.floor(100000 + Math.random() * 900000),
+        userName: user.displayName || "Google User",
+        userEmail: user.email,
+        phone: document.getElementById('orderPhone').value.trim(),
+        address: document.getElementById('orderAddress').value.trim(),
+        notes: document.getElementById('orderNotes').value.trim(),
+        items: cart.map(i => i.title + " (" + i.price + ")").join(", "),
+        time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+      };
+
+      orders.unshift(orderData);
+      localStorage.setItem('niranjan_admin_orders', JSON.stringify(orders));
+
+      const waMsg = encodeURIComponent(
+        "⚡ NAYA ORDER AAYA HAI!\n\n" +
+        "Order ID: " + orderData.orderId + "\n" +
+        "Customer: " + orderData.userName + "\n" +
+        "Phone: " + orderData.phone + "\n" +
+        "Address: " + orderData.address + "\n" +
+        "Items: " + orderData.items
+      );
+
+      const mailtoLink = "mailto:" + ADMIN_EMAIL + "?subject=New Order " + orderData.orderId + "&body=" + waMsg;
+
+      cart = [];
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+      closeModal('checkoutModal');
+
+      alert("Order Successful! Order ID: " + orderData.orderId);
+      window.open("https://wa.me/91" + currentSettings.wa + "?text=" + waMsg, '_blank');
+      window.location.href = mailtoLink;
+    }
+
+    function renderAdminOrders() {
+      const tbody = document.getElementById('adminOrdersTableBody');
+      document.getElementById('statTotalOrders').innerText = orders.length;
+
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#94a3b8;">Koi order nahi aaya hai.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td><b style="color:var(--primary-color);">${o.orderId}</b></td>
+          <td><b>${o.userName}</b><br><small>${o.userEmail}</small></td>
+          <td>${o.items}</td>
+          <td>${o.address}<br>Tel: ${o.phone}</td>
+          <td>${o.time}</td>
+          <td>
+            <a href="https://wa.me/91${o.phone}" target="_blank" class="btn btn-call" style="font-size:10px; padding:3px 6px;">WhatsApp</a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function handleGoogleSignIn() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          logUserActivity(result.user);
+          closeModal('authModal');
+        }).catch((err) => alert("Sign In Error: " + err.message));
+    }
+
+    function logUserActivity(user) {
+      let logs = JSON.parse(localStorage.getItem('niranjan_user_logs')) || [];
+      logs.unshift({
+        name: user.displayName || "Google User",
+        email: user.email,
+        role: (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) ? "Admin" : "Customer",
+        time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+      });
+      if (logs.length > 50) logs.pop();
+      localStorage.setItem('niranjan_user_logs', JSON.stringify(logs));
+      renderUserLogs();
+    }
+
+    function renderUserLogs() {
+      const logs = JSON.parse(localStorage.getItem('niranjan_user_logs')) || [];
+      document.getElementById('statTotalLogins').innerText = logs.length;
+      const tbody = document.getElementById('userLogsTableBody');
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8;">No logins.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = logs.map(l => `
+        <tr>
+          <td><b>${l.name}</b></td>
+          <td>${l.email}</td>
+          <td>${l.role}</td>
+          <td>${l.time}</td>
+        </tr>
+      `).join('');
+    }
+
+    auth.onAuthStateChanged((user) => {
+      const guestActions = document.getElementById('guestActions');
+      const loggedInActions = document.getElementById('loggedInActions');
+      const userNameLabel = document.getElementById('userNameLabel');
+      const adminPanelBtn = document.getElementById('adminPanelBtn');
+
+      if (user) {
+        guestActions.style.display = 'none';
+        loggedInActions.style.display = 'flex';
+        if (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+          userNameLabel.innerText = "Admin: " + (user.displayName || "Piyush");
+          adminPanelBtn.style.display = 'inline-flex';
+          switchView('admin');
+        } else {
+          userNameLabel.innerText = user.displayName || "Customer";
+          adminPanelBtn.style.display = 'none';
+          switchView('customer');
+        }
+      } else {
+        guestActions.style.display = 'block';
+        loggedInActions.style.display = 'none';
+        switchView('customer');
+      }
+    });
+
+    function renderCatalog() {
+      const container = document.getElementById('productGridContainer');
+      container.innerHTML = catalog.map(p => `
+        <div class="product-card">
+          <div class="card-img-wrap">
+            <span class="tag-brand">GENUINE</span>
+            <img src="${p.img}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300x200?text=Product'">
+          </div>
+          <div class="card-body">
+            <span class="product-category">${p.category}</span>
+            <h4 class="product-title">${p.title}</h4>
+            <p class="product-specs">${p.specs}</p>
+            <div class="card-footer">
+              <span class="product-price">${p.price}</span>
+              <div style="display:flex; gap:4px;">
+                <button onclick="addToCart(${p.id})" class="btn btn-outline" style="font-size:11px; padding:5px 8px;">Cart</button>
+                <button onclick="quickOrderNow(${p.id})" class="btn btn-primary" style="font-size:11px; padding:5px 10px;">Order</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    function logoutSession() {
+      auth.signOut().then(() => alert("Logged out safely."));
+    }
+
+    function switchView(view) {
+      const user = auth.currentUser;
+      if (view === 'admin') {
+        if (!user || user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+          alert("Sirf Admin hi access kar sakte hain.");
+          return;
+        }
+      }
+      document.getElementById('customerView').style.display = (view === 'customer') ? 'block' : 'none';
+      document.getElementById('adminView').style.display = (view === 'admin') ? 'block' : 'none';
+      if (view === 'admin') {
+        renderAdminOrders();
+        renderUserLogs();
+      }
+    }
+
+    function handleProductCreation(e) {
+      e.preventDefault();
+      catalog.unshift({
+        id: Date.now(),
+        title: document.getElementById('pName').value,
+        category: document.getElementById('pCategory').value,
+        price: document.getElementById('pPrice').value,
+        img: document.getElementById('pImg').value,
+        specs: document.getElementById('pSpecs').value
+      });
+      localStorage.setItem('niranjan_corp_catalog', JSON.stringify(catalog));
+      renderCatalog();
+      closeModal('addProductModal');
+      alert("Product added!");
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      applySettings();
+      renderCatalog();
+      renderNotifications();
+      updateCartUI();
+      renderUserLogs();
+      renderAdminOrders();
+
+      let visits = parseInt(localStorage.getItem('niranjan_site_visits') || "140") + 1;
+      localStorage.setItem('niranjan_site_visits', visits);
+      document.getElementById('statTotalVisits').innerText = visits;
+
+      setTimeout(dismissPreloader, 1400);
+    });
+  </script>
+</body>
+</html>
