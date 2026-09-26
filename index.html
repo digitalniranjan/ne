@@ -1,0 +1,2879 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title id="tabTitle">Niranjan Electronics | Authorised Distributor</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #D97706;
+      --accent-gold: #FBBF24;
+      --dark-navy: #18181B;
+      --text-main: #334155;
+      --text-muted: #64748B;
+      --bg-light: #FFFBEB;
+      --border-color: #FDE68A;
+      --white: #FFFFFF;
+      --wa-green: #25D366;
+      --radius-val: 10px;
+      --btn-radius: 6px;
+    }
+
+    /* 7 Ultra-Premium Color Themes */
+    body.theme-gold { --primary-color: #D97706; --accent-gold: #FBBF24; --dark-navy: #18181B; --bg-light: #FFFBEB; --border-color: #FDE68A; --text-main: #334155; --white: #FFFFFF; }
+    body.theme-red { --primary-color: #D8232A; --accent-gold: #FDB813; --dark-navy: #0F172A; --bg-light: #FEF2F2; --border-color: #FECACA; --text-main: #334155; --white: #FFFFFF; }
+    body.theme-blue { --primary-color: #1D4ED8; --accent-gold: #38BDF8; --dark-navy: #0B132B; --bg-light: #F0F9FF; --border-color: #BAE6FD; --text-main: #334155; --white: #FFFFFF; }
+    body.theme-green { --primary-color: #059669; --accent-gold: #34D399; --dark-navy: #064E3B; --bg-light: #ECFDF5; --border-color: #A7F3D0; --text-main: #334155; --white: #FFFFFF; }
+    body.theme-purple { --primary-color: #7C3AED; --accent-gold: #F59E0B; --dark-navy: #1E1B4B; --bg-light: #FAF5FF; --border-color: #E9D5FF; --text-main: #334155; --white: #FFFFFF; }
+    body.theme-dark { --primary-color: #F59E0B; --accent-gold: #FBBF24; --dark-navy: #090D16; --text-main: #E2E8F0; --text-muted: #94A3B8; --bg-light: #0B0F19; --border-color: #1E293B; --white: #131B2E; }
+    body.theme-white { --primary-color: #2563EB; --accent-gold: #F59E0B; --dark-navy: #0F172A; --text-main: #1E293B; --text-muted: #64748B; --bg-light: #F8FAFC; --border-color: #CBD5E1; --white: #FFFFFF; }
+
+    /* Shape Presets */
+    body.shape-square { --radius-val: 2px !important; --btn-radius: 2px !important; }
+    body.shape-rounded { --radius-val: 12px !important; --btn-radius: 8px !important; }
+    body.shape-pill { --radius-val: 24px !important; --btn-radius: 50px !important; }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.2s ease, border-color 0.2s ease; }
+    html, body { width: 100%; max-width: 100vw; overflow-x: hidden !important; background-color: var(--bg-light); color: var(--text-main); line-height: 1.4; }
+    h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; color: var(--dark-navy); }
+    body.theme-dark h1, body.theme-dark h2, body.theme-dark h3, body.theme-dark h4, body.theme-dark h5 { color: #FFFFFF; }
+
+    /* Preloader */
+    #sitePreloader {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #0F172A; z-index: 9999999; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; cursor: pointer;
+      opacity: 1; visibility: visible; transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    #sitePreloader.fade-out { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+    .swastik-spin-box { font-size: 65px; color: #FDB813; animation: swastikSpin 1.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; line-height: 1; }
+    .preloader-text { color: white; font-family: 'Outfit'; font-size: 20px; font-weight: 800; letter-spacing: 2px; margin-top: 15px; text-transform: uppercase; text-align: center; }
+    .preloader-subtext { color: #94A3B8; font-size: 11px; letter-spacing: 2px; margin-top: 5px; font-weight: 600; text-align: center; }
+    @keyframes swastikSpin { 0% { transform: rotate(0deg) scale(0.85); } 50% { transform: rotate(180deg) scale(1.15); } 100% { transform: rotate(360deg) scale(0.85); } }
+
+    /* Top Strip */
+    .top-strip { background: var(--dark-navy); color: #94A3B8; font-size: 11px; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px; }
+    .top-strip b { color: white; }
+    .lang-pill { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+
+    /* Shop Status Pill */
+    .shop-status-badge { padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
+    .shop-open { background: #10B981; color: white; }
+    .shop-closed { background: #EF4444; color: white; }
+
+    /* Ticker */
+    .ticker-wrap { background: #1e293b; color: #f8fafc; padding: 5px 0; overflow: hidden; display: flex; align-items: center; border-bottom: 2px solid var(--primary-color); font-size: 12px; font-weight: 600; }
+    .ticker-label { background: var(--primary-color); color: white; padding: 2px 8px; margin-left: 8px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; white-space: nowrap; flex-shrink: 0; }
+    .ticker-marquee { flex: 1; overflow: hidden; white-space: nowrap; }
+    .ticker-content { display: inline-block; padding-left: 100%; animation: tickerAnimation 24s linear infinite; }
+    @keyframes tickerAnimation { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
+    /* Offer Ribbon */
+    #offerRibbon { display: none; background: linear-gradient(90deg, #F59E0B, #EF4444); color: white; text-align: center; padding: 6px 10px; font-size: 12px; font-weight: 700; }
+
+    /* Header */
+    header { background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; width: 100%; }
+    .nav-container { max-width: 1280px; margin: auto; display: flex; flex-direction: column; padding: 6px 12px; gap: 6px; }
+    .nav-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+    .nav-bottom-actions { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 6px; }
+    
+    .brand-container { display: flex; align-items: center; text-decoration: none; }
+    .brand-container img { height: 46px; width: auto; max-width: 170px; object-fit: contain; border-radius: var(--btn-radius); }
+
+    .btn { padding: 6px 10px; border-radius: var(--btn-radius); font-size: 11px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; border: none; white-space: nowrap; }
+    .btn-call { background: #10B981; color: white; }
+    .btn-primary { background: var(--primary-color); color: white; }
+    .btn-outline { border: 1px solid var(--border-color); background: var(--white); color: var(--dark-navy); }
+    body.theme-dark .btn-outline { color: #FFFFFF; }
+    .btn-whatsapp { background: #25D366 !important; color: white !important; font-weight: 700; }
+
+    .icon-badge-btn { position: relative; background: #f1f5f9; color: var(--dark-navy); border: none; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; }
+    body.theme-dark .icon-badge-btn { background: #1E293B; color: white; }
+    .badge-dot { position: absolute; top: -2px; right: -2px; background: var(--primary-color); color: white; font-size: 9px; font-weight: 800; border-radius: 50%; min-width: 15px; height: 15px; padding: 0 2px; display: flex; align-items: center; justify-content: center; }
+
+    /* Hero Section */
+    .hero-section { background: linear-gradient(135deg, var(--dark-navy) 0%, #1E293B 100%); color: white; padding: 22px 12px; width: 100%; }
+    .hero-content { max-width: 1280px; margin: auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; align-items: center; }
+    .badge-distributor { display: inline-flex; align-items: center; gap: 5px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 3px 8px; border-radius: 15px; font-size: 10px; color: var(--accent-gold); font-weight: 600; margin-bottom: 8px; }
+    .hero-title { font-size: 20px; line-height: 1.25; font-weight: 800; margin-bottom: 8px; color: white; }
+    .hero-title span { color: var(--primary-color); }
+    .hero-desc { font-size: 12px; color: #94A3B8; margin-bottom: 12px; }
+    .hero-cta { display: flex; gap: 8px; flex-wrap: wrap; }
+    
+    .hero-image-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-val); padding: 8px; text-align: center; width: 100%; }
+    .hero-image-card img { width: 100%; height: 180px; object-fit: cover; border-radius: var(--btn-radius); }
+    .banner-caption { margin-top: 6px; font-size: 11px; color: #E2E8F0; font-weight: 600; }
+
+    /* Search & Filter Tabs */
+    .filter-search-wrap { max-width: 1280px; margin: 12px auto 0; padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
+    .search-input-box { position: relative; width: 100%; }
+    .search-input-box input { width: 100%; padding: 8px 12px 8px 34px; border: 1px solid var(--border-color); border-radius: var(--btn-radius); font-size: 13px; outline: none; background: var(--white); color: var(--text-main); }
+    .search-input-box i { position: absolute; top: 50%; left: 12px; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; }
+    .category-tabs-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+    .category-tabs-scroll::-webkit-scrollbar { display: none; }
+    .cat-tab-btn { background: var(--white); border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 15px; font-size: 11px; font-weight: 700; color: var(--text-main); cursor: pointer; white-space: nowrap; }
+    .cat-tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+    /* Catalog Section */
+    .catalog-section { max-width: 1280px; margin: auto; padding: 12px 10px 40px; width: 100%; }
+    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
+    body.density-showcase .product-grid { grid-template-columns: 1fr; }
+    @media (min-width: 768px) { 
+      .nav-container { flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 12px; }
+      .nav-top-row { width: auto; }
+      .nav-bottom-actions { width: auto; justify-content: flex-end; }
+      .product-grid { grid-template-columns: repeat(3, 1fr) !important; } 
+    }
+    @media (min-width: 1024px) { .product-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+
+    .product-card { background: var(--white); border: 1px solid var(--border-color); border-radius: var(--radius-val); overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 1px 4px rgba(0,0,0,0.03); position: relative; }
+    .card-img-wrap { height: 130px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; position: relative; padding: 6px; border-bottom: 1px solid var(--border-color); }
+    body.density-showcase .card-img-wrap { height: 180px; }
+    .card-img-wrap img { max-width: 95%; max-height: 95%; object-fit: contain; }
+    .tag-brand { position: absolute; top: 5px; left: 5px; background: var(--dark-navy); color: white; font-size: 8px; font-weight: 700; padding: 2px 4px; border-radius: 3px; }
+    .tag-stock { position: absolute; top: 5px; right: 5px; font-size: 8px; font-weight: 800; padding: 2px 4px; border-radius: 3px; }
+    .stock-in { background: #dcfce7; color: #166534; }
+    .stock-out { background: #fee2e2; color: #991b1b; }
+    
+    .card-body { padding: 8px; display: flex; flex-direction: column; flex-grow: 1; }
+    .product-category { font-size: 9px; font-weight: 700; color: var(--primary-color); text-transform: uppercase; margin-bottom: 2px; }
+    .product-title { font-size: 12px; font-weight: 700; line-height: 1.25; margin-bottom: 4px; color: var(--dark-navy); height: 30px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    body.theme-dark .product-title { color: #FFFFFF; }
+    .product-specs { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; height: 26px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .card-footer { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--border-color); padding-top: 6px; }
+    .product-price { font-size: 13px; font-weight: 800; color: var(--dark-navy); }
+    body.theme-dark .product-price { color: var(--accent-gold); }
+    .card-actions-row { display: flex; gap: 4px; width: 100%; }
+    .card-actions-row .btn { flex: 1; padding: 5px 0; justify-content: center; font-size: 11px; }
+
+    /* Gallery */
+    .gallery-section { background: var(--white); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 25px 12px; width: 100%; }
+    .gallery-container { max-width: 1280px; margin: auto; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    @media (min-width: 768px) { .gallery-grid { grid-template-columns: repeat(4, 1fr); } }
+    .gallery-item-card { background: var(--bg-light); border: 1px solid var(--border-color); border-radius: var(--radius-val); overflow: hidden; display: flex; flex-direction: column; }
+    .gallery-item-card img, .gallery-item-card video, .gallery-item-card iframe { width: 100%; height: 125px; object-fit: cover; background: black; border: none; }
+    .gallery-item-info { padding: 6px 8px; font-size: 11px; font-weight: 600; color: var(--dark-navy); }
+    body.theme-dark .gallery-item-info { color: #E2E8F0; }
+
+    /* Bandhu Floating Bot */
+    #bandhuTrigger { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--dark-navy) 100%); color: white; border: none; border-radius: 50px; padding: 8px 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 13px; z-index: 1500; animation: pulseBot 2.5s infinite; }
+    #bandhuTrigger img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
+    @keyframes pulseBot { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+    #bandhuBox { display: none; position: fixed; bottom: 75px; right: 15px; width: calc(100vw - 30px); max-width: 360px; height: 490px; background: var(--white); border-radius: var(--radius-val); box-shadow: 0 10px 30px rgba(0,0,0,0.25); z-index: 1600; flex-direction: column; overflow: hidden; border: 1px solid var(--border-color); }
+    .bandhu-header { background: var(--dark-navy); color: white; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; }
+    .bandhu-header img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+    .bandhu-messages { flex: 1; padding: 10px; overflow-y: auto; background: var(--bg-light); display: flex; flex-direction: column; gap: 8px; }
+    .chat-bubble { padding: 8px 12px; border-radius: var(--btn-radius); font-size: 12px; max-width: 85%; line-height: 1.4; }
+    .chat-bubble.bot { background: var(--white); border: 1px solid var(--border-color); align-self: flex-start; color: var(--text-main); }
+    .chat-bubble.user { background: var(--primary-color); color: white; align-self: flex-end; }
+    .bandhu-quick-chips { display: flex; gap: 4px; padding: 6px 10px; overflow-x: auto; background: var(--white); border-top: 1px solid var(--border-color); scrollbar-width: none; }
+    .quick-chip { background: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-main); padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .bandhu-input-row { display: flex; padding: 8px; background: var(--white); border-top: 1px solid var(--border-color); gap: 6px; align-items: center; }
+
+    /* Voice Recording Indicator */
+    .mic-recording { animation: micPulse 1s infinite alternate; background: #EF4444 !important; color: white !important; }
+    @keyframes micPulse { from { transform: scale(1); } to { transform: scale(1.15); } }
+
+    /* Admin View */
+    #adminView { display: none; max-width: 1280px; margin: 15px auto; padding: 0 12px; width: 100%; }
+    .admin-card { background: var(--white); border-radius: var(--radius-val); box-shadow: 0 2px 8px rgba(0,0,0,0.04); padding: 14px; border-left: 4px solid var(--primary-color); margin-bottom: 14px; width: 100%; overflow-x: auto; }
+    
+    .admin-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; margin: 10px 0 15px; }
+    .stat-box { background: var(--bg-light); border: 1px solid var(--border-color); padding: 10px; border-radius: var(--btn-radius); text-align: center; }
+    .stat-box h4 { font-size: 18px; font-weight: 800; color: var(--primary-color); }
+    .stat-box p { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
+
+    .admin-table { width: 100%; min-width: 620px; border-collapse: collapse; margin-top: 8px; }
+    .admin-table th, .admin-table td { padding: 8px; border: 1px solid var(--border-color); font-size: 11px; text-align: left; }
+    .admin-table th { background: var(--bg-light); }
+
+    /* Modals */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); z-index: 2000; align-items: center; justify-content: center; padding: 12px; }
+    .modal.active { display: flex; }
+    .modal-box { background: var(--white); border-radius: var(--radius-val); width: 100%; max-width: 480px; padding: 16px; position: relative; max-height: 90vh; overflow-y: auto; color: var(--text-main); }
+    .modal-close { position: absolute; top: 10px; right: 12px; font-size: 20px; border: none; background: none; cursor: pointer; color: #64748B; }
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; color: var(--dark-navy); }
+    body.theme-dark .form-group label { color: #FFFFFF; }
+    .form-control { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: var(--btn-radius); font-size: 12px; outline: none; background: var(--white); color: var(--text-main); }
+
+    .status-badge { padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; display: inline-block; }
+    .status-Pending { background: #fef3c7; color: #92400e; }
+    .status-Packed { background: #e0e7ff; color: #3730a3; }
+    .status-Dispatched { background: #fed7aa; color: #9a3412; }
+    .status-Delivered { background: #dcfce7; color: #166534; }
+
+    /* Print Memo Area */
+    #printBillArea { display: none; background: white; padding: 20px; color: black; font-size: 12px; font-family: monospace; }
+    @media print {
+      body * { visibility: hidden; }
+      #printBillArea, #printBillArea * { visibility: visible; }
+      #printBillArea { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+    }
+
+    footer { background: var(--dark-navy); color: #94A3B8; padding: 30px 12px 15px; font-size: 12px; width: 100%; }
+    .footer-container { max-width: 1280px; margin: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; border-bottom: 1px solid #334155; padding-bottom: 20px; }
+    .footer-col h5 { color: white; font-size: 14px; margin-bottom: 8px; }
+    .footer-col p { line-height: 1.5; margin-bottom: 4px; }
+    .footer-logo-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .social-links-bar { display: flex; gap: 10px; margin-top: 10px; }
+    .social-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: #1E293B; color: white; font-size: 14px; text-decoration: none; }
+    .social-icon-btn:hover { background: var(--primary-color); }
+
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .top-strip { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div id="sitePreloader" onclick="dismissPreloader()">
+    <div class="swastik-spin-box">卐</div>
+    <div class="preloader-text">Niranjan Electronics</div>
+    <div class="preloader-subtext">AUTHORISED DISTRIBUTOR</div>
+  </div>
+
+  <!-- Promotional Offer Ribbon -->
+  <div id="offerRibbon">
+    <span id="offerRibbonText">🔥 Special Wholesale Discount Available for Electricians & Bulk Buyers! Call +91 9931087802.</span>
+  </div>
+
+  <!-- Top Strip with Language Toggle & Shop Status -->
+  <div class="top-strip">
+    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+      <span id="shopStatusBadge" class="shop-status-badge shop-open"><i class="fa fa-door-open"></i> दुकान खुली है (Open)</span>
+      <span><i class="fa fa-id-card"></i> GSTIN: <b id="displayGstin">10DGUPK4899G1ZU</b></span>
+      <span><i class="fa fa-map-marker-alt"></i> <span id="displayAddress">Budhaura, Alauli, Khagaria</span></span>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button class="lang-pill" onclick="toggleSiteLanguage()">
+        <i class="fa fa-language"></i> <span id="langBtnLabel">English me dekhein</span>
+      </button>
+      <span>Proprietor: <b id="displayProprietor">Niranjan Kumar</b></span>
+      <span><i class="fa fa-phone"></i> <span id="displayPhoneTop">+91 9931087802</span></span>
+    </div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-label"><i class="fa fa-bullhorn"></i> <span id="tickerTitle">अपडेट्स</span></div>
+    <div class="ticker-marquee">
+      <div class="ticker-content" id="displayHeadlineTicker">
+        ⚡ Welcome to Niranjan Electronics: Complete Home Wiring, Surya & Havells Wires, Anchor Switches, DTH Dish, Festive Diwali Lari & Bisleri Water! Call +91 9931087802.
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <div class="nav-top-row">
+        <a href="javascript:void(0)" onclick="switchView('customer')" class="brand-container">
+          <img id="siteLogo" src="https://raw.githubusercontent.com/digitalniranjan/ne/main/File_00000000bf708211936903e4775bb714.png" alt="Logo">
+        </a>
+        
+        <div style="display:flex; align-items:center; gap:6px;">
+          <a href="tel:9931087802" id="headerCallBtn" class="btn btn-call"><i class="fa fa-phone"></i> <span id="callLabel">Call</span></a>
+          <div id="guestActions">
+            <button class="btn btn-primary" onclick="openModal('authModal')"><i class="fab fa-google"></i> Sign In</button>
+          </div>
+          <div id="loggedInActions" style="display: none; align-items: center; gap: 5px;">
+            <span id="userNameLabel" style="font-weight: 700; font-size: 11px;"></span>
+            <button id="adminPanelBtn" class="btn btn-primary" style="display: none;" onclick="switchView('admin')"><i class="fa fa-shield-alt"></i> Admin</button>
+            <button class="btn btn-outline" onclick="logoutSession()"><i class="fa fa-sign-out-alt"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-bottom-actions">
+        <!-- Wholesale / Electrician Estimate Button -->
+        <button class="btn btn-outline" onclick="openModal('wholesaleEstimateModal')" title="Electrician / Bulk Estimate" style="background:#fef3c7; color:#92400e; border-color:#fde68a;">
+          <i class="fa fa-file-invoice-dollar"></i> <span id="wholesaleNavText">Wholesale Parcha</span>
+        </button>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <!-- Google Maps Store Location Link -->
+          <a id="headerMapBtn" href="https://maps.google.com/?q=Budhaura,Alauli,Khagaria" target="_blank" class="icon-badge-btn" title="रास्ता देखें (Google Maps)">
+            <i class="fa fa-directions" style="color: #0284C7;"></i>
+          </a>
+
+          <!-- Direct Chat with Shop Owner Button -->
+          <button class="icon-badge-btn" onclick="openDirectChatModal()" title="Direct Chat with Owner">
+            <i class="fa fa-comments"></i>
+            <span class="badge-dot" id="chatBadgeCount" style="display:none;">1</span>
+          </button>
+
+          <!-- Customer Profile & Orders Button -->
+          <button class="icon-badge-btn" onclick="openCustomerProfileModal()" title="My Orders & Profile">
+            <i class="fa fa-user"></i>
+          </button>
+
+          <!-- Shopping Cart Button -->
+          <button class="icon-badge-btn" onclick="openModal('cartModal')" title="Shopping Cart">
+            <i class="fa fa-shopping-cart"></i>
+            <span class="badge-dot" id="cartBadgeCount">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Customer Main View -->
+  <div id="customerView">
+    <section class="hero-section">
+      <div class="hero-content">
+        <div>
+          <div class="badge-distributor"><i class="fa fa-certificate"></i> Authorised Distributor | Surya & Bisleri</div>
+          <h1 class="hero-title" id="displayHeroTitle">
+            Complete Home Wiring, <span>Surya Safety</span> & Pure Bisleri Water
+          </h1>
+          <p class="hero-desc" id="displayHeroDesc">
+            Authorised wholesale distributor of Flame Retardant Copper Wires, Anchor Modular Switches, DTH Dish sets, Festive Diwali LED Lari, and Bulk Bisleri Water.
+          </p>
+          <div class="hero-cta">
+            <a href="tel:9931087802" id="heroCallBtn" class="btn btn-call"><i class="fa fa-phone"></i> <span id="heroCallText">Call Helpline</span></a>
+            <a href="https://wa.me/919931087802" id="heroWaBtn" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp" style="font-size:14px;"></i> WhatsApp</a>
+            <button onclick="toggleBandhuChat()" class="btn btn-outline" style="color: var(--accent-gold); border-color: var(--accent-gold);"><i class="fa fa-robot"></i> <span id="heroBotNameBtn">Ask Bandhu</span></button>
+          </div>
+        </div>
+        <div class="hero-image-card">
+          <img id="displayHeroImg" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" alt="Banner">
+          <div class="banner-caption" id="displayHeroCaption">Niranjan Electronics: Har Ghar Me Suraksha Aur Vishwas</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Filter Tabs -->
+    <div class="filter-search-wrap">
+      <div class="search-input-box">
+        <i class="fa fa-search"></i>
+        <input type="text" id="productSearchInput" placeholder="सामान खोजें (तार, पंखा, डिश, स्विच, पाइप)..." oninput="handleSearchAndFilter()">
+      </div>
+      <div class="category-tabs-scroll" id="categoryTabsContainer"></div>
+    </div>
+
+    <!-- Products Catalog Section -->
+    <section class="catalog-section" id="products">
+      <div class="product-grid" id="productGridContainer"></div>
+    </section>
+
+    <!-- Store & Work Gallery Section (Photos + Videos) -->
+    <section class="gallery-section" id="gallery">
+      <div class="gallery-container">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 12px;"><i class="fa fa-photo-video" style="color: var(--primary-color);"></i> Store Showcase & Work Gallery</h3>
+        <div class="gallery-grid" id="galleryGridContainer"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Wholesale / Electrician Estimate Request Modal -->
+  <div class="modal" id="wholesaleEstimateModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('wholesaleEstimateModal')">&times;</button>
+      <h3 style="font-size: 16px; margin-bottom: 6px; color:var(--primary-color);"><i class="fa fa-file-invoice-dollar"></i> Electrician / Bulk Wholesale Rate</h3>
+      <p style="font-size: 11px; color:var(--text-muted); margin-bottom: 12px;">Ghar ki wiring ya dukaan ke liye bulk rate lene ke liye apna parcha bhejein.</p>
+      <form onsubmit="submitWholesaleEstimate(event)">
+        <div class="form-group">
+          <label>Mistry / Customer Name</label>
+          <input type="text" id="estName" class="form-control" placeholder="Aapka Naam" required>
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="estPhone" class="form-control" placeholder="10-digit number" pattern="[0-9]{10}" required>
+        </div>
+        <div class="form-group">
+          <label>Samaan ki List (Items / Required Quantity)</label>
+          <textarea id="estList" class="form-control" rows="3" placeholder="e.g. 5 coil 1.5mm wire, 40 switch, 20 pipe..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Ya Parcha / Estimate Photo Upload Karein</label>
+          <input type="file" id="estFile" class="form-control" accept="image/*">
+        </div>
+        <button type="submit" id="submitEstBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+          Send to Proprietor via WhatsApp
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dynamic Assistant Chatbot Trigger with Custom Bot Photo -->
+  <button id="bandhuTrigger" onclick="toggleBandhuChat()">
+    <img id="triggerBotImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=100&q=80" alt="Bot">
+    <span id="triggerBotLabel">Bandhu (सहायक)</span>
+  </button>
+
+  <!-- Bandhu Chatbot with Live Voice Support & Full Store Knowledge -->
+  <div id="bandhuBox">
+    <div class="bandhu-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <img id="botHeaderImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=100&q=80" alt="Bot">
+        <div>
+          <b style="font-size: 13px;" id="botHeaderTitle">Bandhu (दुकान सहायक)</b>
+          <div style="font-size: 9px; color:#94a3b8;">Voice & Live Store Knowledge Active</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <button id="voiceToggleBtn" onclick="toggleVoiceReply()" title="Voice On/Off" style="background:none; border:none; color:var(--accent-gold); font-size:14px; cursor:pointer;"><i class="fa fa-volume-up"></i></button>
+        <button onclick="toggleBandhuChat()" style="background:none; border:none; color:white; font-size:18px; cursor:pointer;">&times;</button>
+      </div>
+    </div>
+    
+    <div class="bandhu-messages" id="bandhuMessagesList"></div>
+
+    <div class="bandhu-quick-chips" id="bandhuChipsContainer"></div>
+
+    <div class="bandhu-input-row">
+      <button id="micBtn" class="btn btn-outline" style="padding:6px 8px;" onclick="startVoiceInput()" title="Bol kar poochhein"><i class="fa fa-microphone"></i></button>
+      <input type="text" id="bandhuInput" class="form-control" placeholder="Poochhein ya bol kar batayein..." onkeydown="if(event.key==='Enter') sendBandhuMsg()">
+      <button class="btn btn-primary" onclick="sendBandhuMsg()"><i class="fa fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <!-- Direct Customer to Admin Cloud Chat Modal -->
+  <div class="modal" id="directChatModal">
+    <div class="modal-box" style="display:flex; flex-direction:column; height:500px;">
+      <button class="modal-close" onclick="closeModal('directChatModal')">&times;</button>
+      <div style="border-bottom:1px solid var(--border-color); padding-bottom:6px; margin-bottom:6px;">
+        <h3 style="font-size: 15px;"><i class="fa fa-comments" style="color:var(--primary-color);"></i> Chat with Niranjan Electronics</h3>
+        <p style="font-size: 11px; color:var(--text-muted);">Direct live message dukan ke admin ke paas jayega.</p>
+      </div>
+      <div id="customerLiveChatMsgs" style="flex:1; overflow-y:auto; background:var(--bg-light); padding:8px; border-radius:6px; display:flex; flex-direction:column; gap:6px;"></div>
+      <div style="display:flex; gap:6px; margin-top:8px;">
+        <input type="text" id="custDirectChatInp" class="form-control" placeholder="Type your message..." onkeydown="if(event.key==='Enter') sendCustomerLiveMessage()">
+        <button class="btn btn-primary" onclick="sendCustomerLiveMessage()"><i class="fa fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer Profile & My Orders Modal (With Bill View) -->
+  <div class="modal" id="customerProfileModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('customerProfileModal')">&times;</button>
+      <h3 style="font-size: 16px; margin-bottom: 8px;"><i class="fa fa-user-circle" style="color:var(--primary-color);"></i> My Profile & Orders</h3>
+      
+      <!-- Phone Track Helper for Unlogged Guests -->
+      <div style="display:flex; gap:6px; margin-bottom:10px;">
+        <input type="tel" id="trackOrderPhoneInput" class="form-control" placeholder="Search orders by 10-digit Phone..." style="font-size:11px;">
+        <button class="btn btn-primary" onclick="searchOrdersByPhone()"><i class="fa fa-search"></i> Search</button>
+      </div>
+
+      <div id="custProfileInfo" style="background:var(--bg-light); padding:8px; border-radius:6px; margin-bottom:12px; font-size:12px;"></div>
+      
+      <h4 style="font-size: 13px; margin-bottom: 6px;"><i class="fa fa-box"></i> Order History, Status & Digital Bill</h4>
+      <div id="custOrdersHistoryList" style="max-height: 250px; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <!-- Shopping Cart Modal -->
+  <div class="modal" id="cartModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('cartModal')">&times;</button>
+      <h3 style="font-size: 16px; margin-bottom: 8px;"><i class="fa fa-shopping-cart" style="color: var(--primary-color);"></i> Shopping Cart</h3>
+      <div id="cartItemsList" style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;"></div>
+      <div id="cartTotalSummary" style="font-weight: 700; margin-bottom: 10px; border-top: 1px solid var(--border-color); padding-top: 6px;"></div>
+      <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 9px;" onclick="openOrderCheckoutModal()">
+        Proceed to Order
+      </button>
+    </div>
+  </div>
+
+  <!-- Checkout Delivery Details Modal (With Complete Bill & GST Breakdown) -->
+  <div class="modal" id="checkoutModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('checkoutModal')">&times;</button>
+      <h3 style="font-size: 16px; margin-bottom: 6px; color:var(--primary-color);"><i class="fa fa-receipt"></i> Checkout & Estimate Memo</h3>
+      
+      <div style="background:var(--bg-light); border:1px solid var(--border-color); padding:10px; border-radius:var(--btn-radius); font-size:11px; margin-bottom:12px;">
+        <div style="font-weight:800; font-size:12px; margin-bottom:2px;">NIRANJAN ELECTRONICS</div>
+        <div style="color:var(--text-muted); margin-bottom:4px;">GSTIN: 10DGUPK4899G1ZU | Budhaura, Alauli, Khagaria</div>
+        <div id="checkoutItemsListPreview" style="margin:6px 0; border-top:1px dashed var(--border-color); border-bottom:1px dashed var(--border-color); padding:6px 0; max-height:100px; overflow-y:auto;"></div>
+        <div style="font-weight:700; color:var(--dark-navy);">Estimate Mode: Wholesale Competitive Pricing</div>
+      </div>
+
+      <form onsubmit="submitCustomerOrder(event)">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="orderCustName" class="form-control" placeholder="Aapka Naam" required>
+        </div>
+        <div class="form-group">
+          <label>Village / Delivery Address</label>
+          <input type="text" id="orderAddress" class="form-control" placeholder="Pura Pata / Landmark" required>
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="orderPhone" class="form-control" placeholder="10-digit number" pattern="[0-9]{10}" required>
+        </div>
+        <div class="form-group">
+          <label>Note / Instruction (Optional)</label>
+          <input type="text" id="orderNotes" class="form-control" placeholder="e.g. Call before dispatch">
+        </div>
+        <button type="submit" id="confirmOrderBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+          Confirm Order via WhatsApp
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Printable Digital Bill Container -->
+  <div id="printBillArea">
+    <div style="text-align:center; border-bottom:2px dashed #333; padding-bottom:10px; margin-bottom:10px;">
+      <h2 style="font-size:18px; margin-bottom:2px;">NIRANJAN ELECTRONICS</h2>
+      <p>Proprietor: Niranjan Kumar</p>
+      <p>Main Road, Budhaura, Alauli, Khagaria (Bihar)</p>
+      <p>GSTIN: 10DGUPK4899G1ZU | Mob: +91 9931087802</p>
+      <p>--------------------------------------------------</p>
+      <p><b>ESTIMATE CASH MEMO / ORDER RECEIPT</b></p>
+    </div>
+    <div id="billDetailsContent"></div>
+    <div style="text-align:center; border-top:2px dashed #333; padding-top:10px; margin-top:15px;">
+      <p>Dhanyawad! Visit Again.</p>
+      <p>Niranjan Electronics: Har Ghar Me Suraksha Aur Vishwas</p>
+    </div>
+  </div>
+
+  <!-- Digital Khata Password Login Lock Modal -->
+  <div class="modal" id="khataLoginModal">
+    <div class="modal-box" style="max-width:350px; text-align:center;">
+      <h3 style="margin-bottom:8px; color:var(--primary-color);"><i class="fa fa-lock"></i> Digital Khata Secure Login</h3>
+      <p style="font-size:11px; color:var(--text-muted); margin-bottom:12px;">Khata Book kholne ke liye password darj karein (Default: 1234):</p>
+      <form onsubmit="verifyKhataPassword(event)">
+        <div class="form-group">
+          <input type="password" id="khataPassInput" class="form-control" placeholder="Enter Password..." style="text-align:center; font-size:16px; letter-spacing:2px;" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:9px;">Unlock Khata</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Master Control Panel -->
+  <div id="adminView">
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+        <div>
+          <h2>Master Admin Control Desk</h2>
+          <p style="color: var(--text-muted); font-size: 11px;">Primary Super-Admin: <b>piyushkrjaiswal99@gmail.com</b></p>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-primary" onclick="openAddProductModal()"><i class="fa fa-plus"></i> Add Product</button>
+          <button class="btn btn-outline" onclick="openModal('addGalleryModal')"><i class="fa fa-camera"></i> Add Media</button>
+          <button class="btn btn-outline" onclick="switchView('customer')"><i class="fa fa-store"></i> View Store</button>
+        </div>
+      </div>
+
+      <div class="admin-stats-grid">
+        <div class="stat-box"><h4 id="statTotalProducts">0</h4><p>Products</p></div>
+        <div class="stat-box"><h4 id="statTotalGallery">0</h4><p>Gallery</p></div>
+        <div class="stat-box"><h4 id="statTotalOrders">0</h4><p>Orders</p></div>
+        <div class="stat-box"><h4 id="statTotalVisits">0</h4><p>Visits</p></div>
+        <div class="stat-box"><h4 id="statTotalUsers">0</h4><p>Logins</p></div>
+      </div>
+    </div>
+
+    <!-- Digital Khata & Billing Studio (Password Locked) -->
+    <div class="admin-card" style="border-left-color: #10B981;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3><i class="fa fa-book" style="color: #10B981;"></i> Digital Khata & Professional Billing Desk</h3>
+        <button class="btn btn-outline" onclick="openKhataPasswordChangeModal()" style="font-size:10px;"><i class="fa fa-key"></i> Change Password</button>
+      </div>
+      <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">Grahak ya Mistry ka khata banayein, len-den (Debit/Credit) track karein aur PDF Bill generate karein:</p>
+      
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
+        <button class="btn btn-primary" onclick="checkKhataLockAndExecute('openNewLedgerCustomerModal')"><i class="fa fa-user-plus"></i> Naya Khata Grahak Jodein</button>
+        <button class="btn btn-outline" onclick="checkKhataLockAndExecute('openNewLedgerEntryModal')"><i class="fa fa-rupee-sign"></i> Len-Den Entry Karein</button>
+      </div>
+
+      <div class="form-group" style="max-width:300px; margin-bottom:8px;">
+        <input type="text" id="ledgerSearchInp" class="form-control" placeholder="Grahak ka naam ya phone search karein..." oninput="renderAdminLedgers()">
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Customer Name</th>
+              <th>Mobile Number</th>
+              <th>Total Balance (Bakaya)</th>
+              <th>Actions (View / Bill / WhatsApp)</th>
+            </tr>
+          </thead>
+          <tbody id="adminLedgersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Master UI & Appearance Studio -->
+    <div class="admin-card">
+      <h3><i class="fa fa-palette" style="color: var(--primary-color);"></i> Master UI & Appearance Studio</h3>
+      <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">Select Color Themes, Button Shapes, and Display Density live:</p>
+      
+      <div style="margin-bottom:12px;">
+        <label style="font-size:11px; font-weight:bold; display:block; margin-bottom:6px;">1. Color Palette Presets (7 Ultra-Premium Themes):</label>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" style="background:#D97706; color:white;" onclick="setThemePreset('gold')">🟡 Imperial Royal Gold</button>
+          <button class="btn" style="background:#D8232A; color:white;" onclick="setThemePreset('red')">🔴 Surya Ruby & Amber</button>
+          <button class="btn" style="background:#1D4ED8; color:white;" onclick="setThemePreset('blue')">🔵 Sapphire Navy</button>
+          <button class="btn" style="background:#059669; color:white;" onclick="setThemePreset('green')">🟢 Bisleri Emerald</button>
+          <button class="btn" style="background:#7C3AED; color:white;" onclick="setThemePreset('purple')">🟣 Royal Velvet Bronze</button>
+          <button class="btn" style="background:#090D16; color:#F59E0B; border:1px solid #F59E0B;" onclick="setThemePreset('dark')">⚫ Midnight Titanium</button>
+          <button class="btn" style="background:#FFFFFF; color:#2563EB; border:1px solid #CBD5E1;" onclick="setThemePreset('white')">⚪ Pearl White</button>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-top:10px;">
+        <div class="form-group">
+          <label>2. UI Corners & Shapes</label>
+          <select id="settingUiShape" class="form-control" onchange="setUiShape(this.value)">
+            <option value="rounded">Modern Rounded (Smooth 12px)</option>
+            <option value="square">Sharp Square (Industrial 2px)</option>
+            <option value="pill">Pill Luxe (Fully Rounded 24px)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>3. Catalog Density (Display Layout)</label>
+          <select id="settingUiDensity" class="form-control" onchange="setUiDensity(this.value)">
+            <option value="compact">Compact Wholesale (2-Column Dense)</option>
+            <option value="showcase">Showcase Cards (Large Visual Display)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Multi-Admin Permission Desk -->
+    <div class="admin-card">
+      <h3><i class="fa fa-user-shield" style="color: var(--primary-color);"></i> Co-Admins Manager (Add / Remove Admins)</h3>
+      <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Kisi aur ko admin banane ke liye unka Gmail dalein:</p>
+      <div style="display:flex; gap:6px; max-width:400px; margin-bottom:10px;">
+        <input type="email" id="newAdminEmailInput" class="form-control" placeholder="friend@gmail.com">
+        <button class="btn btn-primary" onclick="addNewAdminEmail()"><i class="fa fa-user-plus"></i> Add</button>
+      </div>
+      <div id="coAdminsListContainer" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
+    </div>
+
+    <!-- Wholesale / Electrician Estimates Received Desk -->
+    <div class="admin-card">
+      <h3><i class="fa fa-file-invoice-dollar" style="color: var(--primary-color);"></i> Electrician Wholesale Estimates (Parcha Received)</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Date & Time</th>
+            <th>Mistry / Customer</th>
+            <th>Phone</th>
+            <th>Required Items</th>
+            <th>Parcha Photo</th>
+            <th>WhatsApp Reply</th>
+          </tr>
+        </thead>
+        <tbody id="adminEstimatesTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Shop Open/Closed Status & Hero Title Controller -->
+    <div class="admin-card">
+      <h3><i class="fa fa-store-alt" style="color: var(--primary-color);"></i> Live Shop Status & Hero Heading Controller</h3>
+      <form onsubmit="saveShopStatusAndHero(event)">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+          <div class="form-group">
+            <label>Shop Status (Khuli Hai / Band Hai)</label>
+            <select id="settingShopStatus" class="form-control">
+              <option value="open">🟢 दुकान खुली है (Shop Open)</option>
+              <option value="closed">🔴 दुकान बंद है (Shop Closed)</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Main Store Hero Title (Heading)</label>
+            <input type="text" id="settingHeroTitle" class="form-control" placeholder="Complete Home Wiring, Surya Safety & Pure Bisleri Water">
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Hero Description Subtext</label>
+            <input type="text" id="settingHeroDesc" class="form-control" placeholder="Authorised wholesale distributor of Flame Retardant Copper Wires...">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:6px;"><i class="fa fa-save"></i> Save Status & Headings</button>
+      </form>
+    </div>
+
+    <!-- Running Headline Ticker Manager -->
+    <div class="admin-card">
+      <h3><i class="fa fa-bullhorn" style="color: var(--primary-color);"></i> Running Headline Ticker Updates</h3>
+      <form onsubmit="saveHeadlineTicker(event)">
+        <div class="form-group">
+          <label>Ticker Updates Text (Patti par chalne wala text)</label>
+          <input type="text" id="adminTickerInput" class="form-control" placeholder="⚡ Welcome to Niranjan Electronics...">
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-sync"></i> Save & Update Ticker</button>
+      </form>
+    </div>
+
+    <!-- Customer Live Messages Desk with Realtime Unread Counter -->
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3><i class="fa fa-comments" style="color: var(--primary-color);"></i> Customer Live Messages & Inquiries</h3>
+        <span id="adminUnreadBadge" style="background:var(--primary-color); color:white; font-size:10px; padding:2px 8px; border-radius:10px; font-weight:bold; display:none;">New Message</span>
+      </div>
+      <div id="adminLiveChatThreads" style="max-height: 250px; overflow-y: auto; background:var(--bg-light); border:1px solid var(--border-color); border-radius:6px; padding:8px;">
+        <p style="text-align:center; color:#94a3b8;">Koi naya message nahi aaya hai.</p>
+      </div>
+    </div>
+
+    <!-- Customer Orders Queue with Status Controller & Bill Print -->
+    <div class="admin-card">
+      <h3 style="margin-bottom:8px;"><i class="fa fa-receipt" style="color: var(--primary-color);"></i> Customer Orders & Live Status Manager</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Items Ordered</th>
+            <th>Address & Phone</th>
+            <th>Status Update</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="adminOrdersTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Dynamic Bot & Feature Customizer (Name, Logo & Welcome) -->
+    <div class="admin-card">
+      <h3><i class="fa fa-robot" style="color: var(--primary-color);"></i> Customize Chatbot (Logo, Name & Messages)</h3>
+      <form onsubmit="saveBotAndFeatureSettings(event)">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+          <div class="form-group">
+            <label>Chatbot Name</label>
+            <input type="text" id="settingBotName" class="form-control" placeholder="Bandhu">
+          </div>
+          <div class="form-group">
+            <label>Upload Bot Custom Logo/Photo</label>
+            <input type="file" id="settingBotPhotoFile" class="form-control" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label>Show Top Offer Ribbon?</label>
+            <select id="settingShowRibbon" class="form-control">
+              <option value="yes">Yes (Show Offer)</option>
+              <option value="no">No (Hide Offer)</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Chatbot Welcome Message</label>
+            <input type="text" id="settingBotWelcome" class="form-control" placeholder="Namaste! Main Bandhu hoon...">
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Offer Ribbon Text</label>
+            <input type="text" id="settingRibbonText" class="form-control" placeholder="🔥 Special Wholesale Discount...">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:6px;"><i class="fa fa-save"></i> Save Bot & Feature Settings</button>
+      </form>
+    </div>
+
+    <!-- Product Manager with In-Stock / Out-of-Stock Switch -->
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3><i class="fa fa-boxes" style="color: var(--primary-color);"></i> Manage Products & Stock Status</h3>
+        <button class="btn btn-primary" onclick="openAddProductModal()"><i class="fa fa-plus"></i> Add Product</button>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>Photo</th><th>Name</th><th>Category</th><th>Price</th><th>Stock Status</th><th>Actions</th></tr></thead>
+        <tbody id="adminTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Store Banner & Owner Photo Customizer -->
+    <div class="admin-card">
+      <h3><i class="fa fa-image" style="color: var(--primary-color);"></i> Update Main Store Banner</h3>
+      <form onsubmit="saveBannerCustomization(event)">
+        <div class="form-group">
+          <label>Upload Photo from Phone</label>
+          <input type="file" id="bannerFileInput" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>Caption Text</label>
+          <input type="text" id="bannerCaptionInput" class="form-control" placeholder="Niranjan Electronics...">
+        </div>
+        <button type="submit" id="saveBannerBtn" class="btn btn-primary"><i class="fa fa-cloud-upload-alt"></i> Save & Publish Live</button>
+      </form>
+    </div>
+
+    <!-- Gallery Manager -->
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3><i class="fa fa-photo-video" style="color: var(--primary-color);"></i> Manage Gallery</h3>
+        <button class="btn btn-primary" onclick="openModal('addGalleryModal')"><i class="fa fa-plus"></i> Add Media</button>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>Preview</th><th>Title</th><th>Type</th><th>Action</th></tr></thead>
+        <tbody id="adminGalleryTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Store Settings, Logo, Social Media & Footer Customizer -->
+    <div class="admin-card">
+      <h3><i class="fa fa-sliders-h" style="color: var(--primary-color);"></i> Store Details, Logo, Social Media & Footer</h3>
+      <form onsubmit="saveStoreSettings(event)">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:8px;">
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label style="color:var(--primary-color);"><i class="fa fa-camera"></i> Upload New Website Logo (Mobile se)</label>
+            <input type="file" id="settingLogoFileInput" class="form-control" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" id="settingPhone" class="form-control" placeholder="9931087802">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="text" id="settingWa" class="form-control" placeholder="919931087802">
+          </div>
+          <div class="form-group">
+            <label>Proprietor Name</label>
+            <input type="text" id="settingProprietor" class="form-control" placeholder="Niranjan Kumar">
+          </div>
+          <div class="form-group">
+            <label>GSTIN</label>
+            <input type="text" id="settingGstin" class="form-control" placeholder="10DGUPK4899G1ZU">
+          </div>
+          <div class="form-group">
+            <label>Facebook Profile/Page URL</label>
+            <input type="url" id="settingFbUrl" class="form-control" placeholder="https://facebook.com/...">
+          </div>
+          <div class="form-group">
+            <label>Instagram Profile URL</label>
+            <input type="url" id="settingInstaUrl" class="form-control" placeholder="https://instagram.com/...">
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Google Maps Location Link</label>
+            <input type="url" id="settingMapUrl" class="form-control" placeholder="https://maps.google.com/...">
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Store Address</label>
+            <input type="text" id="settingAddress" class="form-control" placeholder="Main Road, Budhaura...">
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Footer Custom About Text</label>
+            <input type="text" id="settingFooterAbout" class="form-control" placeholder="Authorised Distributor for Surya Turbo Flex Wires & Bisleri Water across Alauli & Khagaria.">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:10px;"><i class="fa fa-cloud-upload-alt"></i> Update All Store & Footer Details</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Change Khata Password Modal -->
+  <div class="modal" id="changeKhataPassModal">
+    <div class="modal-box" style="max-width:350px;">
+      <button class="modal-close" onclick="closeModal('changeKhataPassModal')">&times;</button>
+      <h3 style="margin-bottom:8px; color:var(--primary-color);"><i class="fa fa-key"></i> Khata Password Badlein</h3>
+      <form onsubmit="handleKhataPasswordChange(event)">
+        <div class="form-group">
+          <label>Naya Password Likhein</label>
+          <input type="password" id="newKhataPass" class="form-control" placeholder="New PIN / Password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:9px;">Password Save Karein</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Naya Khata Grahak Modal -->
+  <div class="modal" id="newLedgerCustomerModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('newLedgerCustomerModal')">&times;</button>
+      <h3 style="margin-bottom: 10px; font-size: 16px;"><i class="fa fa-user-plus" style="color: #10B981;"></i> Naya Khata Jodein</h3>
+      <form onsubmit="handleNewLedgerCustomerSubmit(event)">
+        <div class="form-group">
+          <label>Customer / Electrician Name</label>
+          <input type="text" id="lcName" class="form-control" placeholder="Naam..." required>
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="lcPhone" class="form-control" placeholder="10-digit number" pattern="[0-9]{10}" required>
+        </div>
+        <div class="form-group">
+          <label>Village / Address</label>
+          <input type="text" id="lcAddress" class="form-control" placeholder="Gaon / Pata">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px; background:#10B981;">Khata Banayein</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Len-Den Entry Modal -->
+  <div class="modal" id="newLedgerEntryModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('newLedgerEntryModal')">&times;</button>
+      <h3 style="margin-bottom: 10px; font-size: 16px;"><i class="fa fa-rupee-sign" style="color: var(--primary-color);"></i> Len-Den Entry & Parcha Photo</h3>
+      <form onsubmit="handleNewLedgerEntrySubmit(event)">
+        <div class="form-group">
+          <label>Grahak Chunein</label>
+          <select id="leCustomerId" class="form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label>Entry Type</label>
+          <select id="leType" class="form-control">
+            <option value="debit">🔴 Udhaar / Samaan Liya (Debit)</option>
+            <option value="credit">🟢 Paisa Diya / Jama Kiya (Credit)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Amount (₹)</label>
+          <input type="number" id="leAmount" class="form-control" placeholder="e.g. 1500" required>
+        </div>
+        <div class="form-group">
+          <label>Description / Items Detail</label>
+          <input type="text" id="leDesc" class="form-control" placeholder="e.g. 2 coil 1.5mm wire & 1 Bisleri Jar" required>
+        </div>
+        <div class="form-group">
+          <label>Raseed / Parcha Photo (Optional)</label>
+          <input type="file" id="lePhoto" class="form-control" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">Entry Save Karein</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Customer Detail Khata View Modal -->
+  <div class="modal" id="viewCustomerLedgerModal">
+    <div class="modal-box" style="max-width: 600px;">
+      <button class="modal-close" onclick="closeModal('viewCustomerLedgerModal')">&times;</button>
+      <div id="ledgerDetailHeader" style="border-bottom:1px solid var(--border-color); padding-bottom:8px; margin-bottom:10px;"></div>
+      <div id="ledgerTransactionsList" style="max-height: 250px; overflow-y: auto; margin-bottom: 10px;"></div>
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-primary" onclick="printLedgerBill()"><i class="fa fa-print"></i> Print / PDF Bill</button>
+        <button class="btn btn-whatsapp" onclick="shareLedgerWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp Statement</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Modal (Add / Edit + Custom Category) -->
+  <div class="modal" id="productModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('productModal')">&times;</button>
+      <h3 id="productModalTitle" style="margin-bottom: 10px; font-size: 16px;">Add New Product</h3>
+      <form onsubmit="handleProductFormSubmit(event)">
+        <input type="hidden" id="editProductId">
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" id="pName" class="form-control" placeholder="e.g. Havells Life Line 1.5 sq mm" required>
+        </div>
+        <div class="form-group">
+          <label>Product Category</label>
+          <select id="pCategorySelect" class="form-control" onchange="handleCategorySelectChange()">
+            <option value="Wires">Wires & Cables</option>
+            <option value="DTH">DTH Dish & TV</option>
+            <option value="Diwali">Diwali Lights</option>
+            <option value="Switches">Switches & Board</option>
+            <option value="Pipes">Pipes & Fittings</option>
+            <option value="Appliances">Appliances & Rod</option>
+            <option value="Lighting">LED Lights</option>
+            <option value="Bisleri">Bisleri Water</option>
+            <option value="CUSTOM">+ Custom Category (Add New)</option>
+          </select>
+        </div>
+        <div class="form-group" id="customCategoryWrap" style="display: none; background: #f1f5f9; padding: 8px; border-radius: 5px;">
+          <label style="color: var(--primary-color);">Apni Nayi Category ka Naam Likhein:</label>
+          <input type="text" id="pCustomCategory" class="form-control" placeholder="e.g. Inverter, Solar, Motor...">
+        </div>
+        <div class="form-group">
+          <label>Price</label>
+          <input type="text" id="pPrice" class="form-control" placeholder="e.g. ₹450 or Wholesale Rate" required>
+        </div>
+        <div class="form-group">
+          <label>Stock Status</label>
+          <select id="pStockStatus" class="form-control">
+            <option value="in">In Stock (उपलब्ध है)</option>
+            <option value="out">Out of Stock (खत्म है)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Upload Photo from Phone (Leave empty to keep existing photo)</label>
+          <input type="file" id="pImgFile" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>Or Web Image URL (Optional)</label>
+          <input type="url" id="pImgUrl" class="form-control" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>Specifications</label>
+          <input type="text" id="pSpecs" class="form-control" placeholder="100% Pure Copper, Genuine">
+        </div>
+        <button type="submit" id="saveProductBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">Save Product</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Gallery Modal -->
+  <div class="modal" id="addGalleryModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('addGalleryModal')">&times;</button>
+      <h3 style="margin-bottom: 10px; font-size: 16px;">Add Media to Gallery</h3>
+      <form onsubmit="handleGalleryCreation(event)">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="gTitle" class="form-control" placeholder="Title..." required>
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select id="gType" class="form-control" onchange="toggleGalleryTypeInputs()">
+            <option value="photo_file">Upload Photo from Phone</option>
+            <option value="video_file">Upload Short Video from Phone (MP4)</option>
+            <option value="photo_url">Photo Web Link</option>
+            <option value="video_embed">YouTube Video Link</option>
+          </select>
+        </div>
+        <div class="form-group" id="gFileInputWrap">
+          <label>Select Photo or Video File</label>
+          <input type="file" id="gFileInput" class="form-control" accept="image/*,video/mp4">
+        </div>
+        <div class="form-group" id="gUrlInputWrap" style="display: none;">
+          <label>Web Link / YouTube Embed Link</label>
+          <input type="url" id="gUrlInput" class="form-control" placeholder="https://...">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">Publish Live</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Google Auth & Free Email/Password Modal -->
+  <div class="modal" id="authModal">
+    <div class="modal-box" style="text-align: center;">
+      <button class="modal-close" onclick="closeModal('authModal')">&times;</button>
+      <h3 style="font-size: 16px; margin-bottom: 4px;">Sign In / Account</h3>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Orders save karne aur chat karne ke liye login karein</p>
+      
+      <button type="button" class="btn btn-outline" style="width: 100%; justify-content: center; padding: 9px; margin-bottom: 12px;" onclick="handleGoogleSignIn()">
+        <i class="fab fa-google" style="color:#EA4335;"></i> Google 1-Tap Login
+      </button>
+
+      <div style="font-size: 11px; color:#94a3b8; margin-bottom: 8px;">--- OR EMAIL LOGIN ---</div>
+      
+      <form onsubmit="handleEmailAuth(event)">
+        <div class="form-group">
+          <input type="email" id="authEmail" class="form-control" placeholder="Email ID..." required>
+        </div>
+        <div class="form-group">
+          <input type="password" id="authPassword" class="form-control" placeholder="Password..." required>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;">Log In</button>
+          <button type="button" class="btn btn-outline" style="flex:1; justify-content:center;" onclick="handleEmailSignUp()">Sign Up</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer with Social Links & Dynamic Description -->
+  <footer id="about">
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="footer-logo-wrap">
+          <img id="footerLogo" src="https://raw.githubusercontent.com/digitalniranjan/ne/main/File_00000000bf708211936903e4775bb714.png" alt="Logo" style="max-height: 42px; width: auto;">
+          <h4 style="color: white; font-size: 16px; font-weight: 800;">NIRANJAN ELECTRONICS</h4>
+        </div>
+        <p><b>Proprietor:</b> <span id="displayFooterProprietor">Niranjan Kumar</span></p>
+        <p id="displayFooterAbout">Authorised Distributor for Surya Turbo Flex Wires & Bisleri Water across Alauli & Khagaria.</p>
+        
+        <div class="social-links-bar">
+          <a id="footerFbLink" href="#" target="_blank" class="social-icon-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a id="footerInstaLink" href="#" target="_blank" class="social-icon-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a id="footerMapLink" href="https://maps.google.com/?q=Budhaura,Alauli,Khagaria" target="_blank" class="social-icon-btn" title="Google Maps"><i class="fa fa-map-marked-alt"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Contact & Tax Details</h5>
+        <p><i class="fa fa-map-marker-alt" style="color: var(--primary-color);"></i> <span id="displayFooterAddress">Main Road, Budhaura, Alauli, Khagaria</span></p>
+        <p><i class="fa fa-phone" style="color: #10B981;"></i> <span id="displayFooterPhone">+91 9931087802</span></p>
+        <p><i class="fa fa-file-invoice" style="color: var(--accent-gold);"></i> GSTIN: <span id="displayFooterGstin">10DGUPK4899G1ZU</span></p>
+      </div>
+    </div>
+    <div style="text-align:center; padding-top: 14px; font-size: 11px;">© 2026 Niranjan Electronics. All Rights Reserved.</div>
+  </footer>
+
+  <script>
+    const PRIMARY_ADMIN_EMAIL = "piyushkrjaiswal99@gmail.com";
+    let dynamicAdminEmails = [PRIMARY_ADMIN_EMAIL];
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUAa2099assK5mVJPTBe9i5kM4WOEANXI",
+      authDomain: "digitalniranjan0.firebaseapp.com",
+      projectId: "digitalniranjan0",
+      storageBucket: "digitalniranjan0.firebasestorage.app",
+      messagingSenderId: "405859935264",
+      appId: "1:405859935264:web:8b16546690402075690845",
+      measurementId: "G-7C8GZRHS1R"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
+      console.log("Persistence note:", err.code);
+    });
+
+    let currentLang = localStorage.getItem('niranjan_site_lang') || 'hi';
+    let voiceReplyEnabled = true;
+    let recognition = null;
+    let allLedgerCustomers = [];
+    let allLedgerEntries = [];
+    let selectedActiveLedgerCust = null;
+    let pendingKhataAction = null;
+    let khataPasswordPin = "1234";
+
+    const defaultSettings = {
+      logoUrl: "https://raw.githubusercontent.com/digitalniranjan/ne/main/File_00000000bf708211936903e4775bb714.png",
+      bannerImg: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80",
+      bannerCaption: "Niranjan Electronics: Har Ghar Me Suraksha Aur Vishwas",
+      phone: "9931087802",
+      wa: "919931087802",
+      proprietor: "Niranjan Kumar",
+      gstin: "10DGUPK4899G1ZU",
+      address: "Main Road, Budhaura, Alauli (Khagaria), Bihar",
+      headlineTicker: "⚡ Welcome to Niranjan Electronics: Complete Home Wiring, Surya & Havells Wires, Anchor Switches, DTH Dish, Festive Diwali Lari & Bisleri Water! Call +91 9931087802.",
+      botName: "Bandhu",
+      botLogo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=100&q=80",
+      botWelcome: "Namaste! 🙏 Main Niranjan Electronics ka digital saathi hoon. Main aapki kya madad kar sakta hoon?",
+      showRibbon: "yes",
+      ribbonText: "🔥 Special Wholesale Discount Available for Electricians & Bulk Buyers! Call +91 9931087802.",
+      shopStatus: "open",
+      heroTitle: "Complete Home Wiring, Surya Safety & Pure Bisleri Water",
+      heroDesc: "Authorised wholesale distributor of Flame Retardant Copper Wires, Anchor Modular Switches, DTH Dish sets, Festive Diwali LED Lari, and Bulk Bisleri Water.",
+      fbUrl: "https://facebook.com",
+      instaUrl: "https://instagram.com",
+      mapUrl: "https://maps.google.com/?q=Budhaura,Alauli,Khagaria",
+      footerAbout: "Authorised Distributor for Surya Turbo Flex Wires & Bisleri Water across Alauli & Khagaria.",
+      siteTheme: "gold",
+      uiShape: "rounded",
+      uiDensity: "compact"
+    };
+
+    const initialCatalogData = [
+      { id: "1", title: "Surya Turbo Flex PVC FR Wire (1.0 sq mm)", category: "Wires", price: "Wholesale Rate", stock: "in", specs: "100% Pure Copper Conductor, 1100V Flame Retardant (FR).", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80" },
+      { id: "2", title: "Surya Turbo Flex PVC FR Wire (1.5 sq mm)", category: "Wires", price: "Wholesale Rate", stock: "in", specs: "Heavy grade multi-strand copper wire for power sockets.", img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80" },
+      { id: "3", title: "Surya Turbo Flex PVC FR Wire (2.5 sq mm)", category: "Wires", price: "Wholesale Rate", stock: "in", specs: "High load wire for AC, Geyser and heavy appliances.", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80" },
+      { id: "4", title: "Havells Life Line Plus HRFR Wire (1.5 sq mm)", category: "Wires", price: "Best Deal", stock: "in", specs: "100% conductivity, Heat Resistant & Flame Retardant 90m coil.", img: "https://images.unsplash.com/photo-1601524909162-ae8725290836?auto=format&fit=crop&w=500&q=80" },
+      { id: "5", title: "Polycab FR-LSH Copper Building Wire (2.5 sq mm)", category: "Wires", price: "Wholesale Rate", stock: "in", specs: "Low smoke zero halogen copper wire for safe home wiring.", img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80" },
+      { id: "6", title: "DTH Ku-Band Dish Antenna (Complete Set)", category: "DTH", price: "₹650", stock: "in", specs: "Heavy solid dish with wall bracket, screws & LNB holder.", img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=500&q=80" },
+      { id: "7", title: "Universal Single Ku-Band LNBF (Full HD 4K)", category: "DTH", price: "₹180", stock: "in", specs: "Ultra low noise 0.1dB figure for all DTH brands.", img: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=500&q=80" },
+      { id: "8", title: "RG-6 Heavy Duty Coaxial Cable (Dish Wire)", category: "DTH", price: "₹12 / meter", stock: "in", specs: "Dual shield copper-braided high frequency dish cable.", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80" },
+      { id: "9", title: "Surya Jag-Mag Festive LED Decorative Lari (45M)", category: "Diwali", price: "₹190", stock: "in", specs: "Multi-color bright Diwali string light with durable copper wire.", img: "https://images.unsplash.com/photo-1513297887119-d46091b24bfa?auto=format&fit=crop&w=500&q=80" },
+      { id: "10", title: "Anchor Penta 6A Piano Switch & 3-Pin Socket Set", category: "Switches", price: "₹65", stock: "in", specs: "Spark resistant silver inlay contacts, safety shutters, ISI certified.", img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80" },
+      { id: "11", title: "Heavy Duty PVC Electrical Conduit Pipe (20mm & 25mm)", category: "Pipes", price: "Wholesale Bundle", stock: "in", specs: "Rigid fire retardant PVC pipe for concealed wall conduit fitting.", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80" },
+      { id: "12", title: "Eveready / Havells 1500W Immersion Water Heating Rod", category: "Appliances", price: "₹480", stock: "in", specs: "Shock-proof plastic handle, nickel plated anti-corrosive rod.", img: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=500&q=80" },
+      { id: "13", title: "Havells / Surya Heavyweight Dry Electric Iron (1000W)", category: "Appliances", price: "₹850", stock: "in", specs: "Non-stick coated soleplate with automatic thermal cut-off.", img: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=500&q=80" },
+      { id: "14", title: "Surya Dazzle Maxx 15W Surface Round LED Downlighter", category: "Lighting", price: "₹450", stock: "in", specs: "Surface mount ceiling fitting, 25,000 hours life, surge protection.", img: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?auto=format&fit=crop&w=500&q=80" },
+      { id: "15", title: "Bisleri Packaged Drinking Water (20 Litre Bulk Jar)", category: "Bisleri", price: "₹80 / Jar", stock: "in", specs: "Authorised 100% original 10-step purified mineral water supply.", img: "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=500&q=80" }
+    ];
+
+    let currentSettings = defaultSettings;
+    let catalog = [];
+    let gallery = [];
+    let allOrders = [];
+    let allEstimates = [];
+    let allLiveMessages = [];
+    let cart = JSON.parse(localStorage.getItem('niranjan_user_cart')) || [];
+    let activeFilter = "All";
+    let searchQuery = "";
+    let existingProductBeingEdited = null;
+
+    function dismissPreloader() {
+      const loader = document.getElementById('sitePreloader');
+      if (loader) {
+        loader.classList.add('fade-out');
+        setTimeout(() => { loader.style.display = 'none'; }, 400);
+      }
+    }
+
+    function toggleSiteLanguage() {
+      currentLang = (currentLang === 'hi') ? 'en' : 'hi';
+      localStorage.setItem('niranjan_site_lang', currentLang);
+      applyLanguageTexts();
+    }
+
+    function applyLanguageTexts() {
+      const isHi = (currentLang === 'hi');
+      document.getElementById('langBtnLabel').innerText = isHi ? 'English me dekhein' : 'हिंदी में देखें';
+      document.getElementById('wholesaleNavText').innerText = isHi ? 'Wholesale Parcha' : 'Bulk Estimate';
+      document.getElementById('tickerTitle').innerText = isHi ? 'अपडेट्स' : 'Updates';
+      document.getElementById('productSearchInput').placeholder = isHi ? 'सामान खोजें (तार, पंखा, डिश, स्विच, पाइप)...' : 'Search (Wire, Fan, Dish, Switch, Pipe)...';
+      document.getElementById('callLabel').innerText = isHi ? 'कॉल करें' : 'Call';
+      document.getElementById('heroCallText').innerText = isHi ? 'कॉल हेल्पलाइन' : 'Call Helpline';
+      
+      const bName = currentSettings.botName || "Bandhu";
+      document.getElementById('triggerBotLabel').innerText = isHi ? (bName + " (सहायक)") : (bName + " (Assistant)");
+      document.getElementById('botHeaderTitle').innerText = isHi ? (bName + " (दुकान सहायक)") : (bName + " (Store Assistant)");
+      document.getElementById('heroBotNameBtn').innerText = isHi ? ("बात करें " + bName) : ("Ask " + bName);
+
+      renderBandhuChips();
+      renderCatalog();
+    }
+
+    function setThemePreset(themeName) {
+      currentSettings.siteTheme = themeName;
+      applyFullVisualTheme();
+      db.collection('settings').doc('global').set({ siteTheme: themeName }, { merge: true });
+    }
+
+    function setUiShape(shapeName) {
+      currentSettings.uiShape = shapeName;
+      applyFullVisualTheme();
+      db.collection('settings').doc('global').set({ uiShape: shapeName }, { merge: true });
+    }
+
+    function setUiDensity(densityName) {
+      currentSettings.uiDensity = densityName;
+      applyFullVisualTheme();
+      db.collection('settings').doc('global').set({ uiDensity: densityName }, { merge: true });
+    }
+
+    function applyFullVisualTheme() {
+      const theme = currentSettings.siteTheme || 'gold';
+      const shape = currentSettings.uiShape || 'rounded';
+      const density = currentSettings.uiDensity || 'compact';
+
+      document.body.className = `theme-${theme} shape-${shape} density-${density}`;
+      
+      const shapeSel = document.getElementById('settingUiShape');
+      const denseSel = document.getElementById('settingUiDensity');
+      if (shapeSel) shapeSel.value = shape;
+      if (denseSel) denseSel.value = density;
+    }
+
+    function compressImageFile(file, maxWidth, quality, callback) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          callback(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function recordVisitorHit() {
+      const statsDoc = db.collection('settings').doc('stats');
+      statsDoc.get().then((doc) => {
+        if (doc.exists) {
+          statsDoc.update({ visits: firebase.firestore.FieldValue.increment(1) });
+        } else {
+          statsDoc.set({ visits: 1, userLogins: 0 });
+        }
+      }).catch(err => console.log(err));
+    }
+
+    function setupCloudListeners() {
+      db.collection('settings').doc('global').onSnapshot((doc) => {
+        if (doc.exists) {
+          currentSettings = Object.assign({}, defaultSettings, doc.data());
+          if (doc.data().khataPin) khataPasswordPin = doc.data().khataPin;
+          applySettings();
+          applyFullVisualTheme();
+        } else {
+          db.collection('settings').doc('global').set(defaultSettings);
+        }
+      });
+
+      db.collection('settings').doc('admins').onSnapshot((doc) => {
+        if (doc.exists && doc.data().list) {
+          dynamicAdminEmails = Array.from(new Set([PRIMARY_ADMIN_EMAIL, ...doc.data().list]));
+        } else {
+          db.collection('settings').doc('admins').set({ list: [PRIMARY_ADMIN_EMAIL] });
+        }
+        renderCoAdminsList();
+        verifyCurrentAdminStatus(auth.currentUser);
+      });
+
+      db.collection('settings').doc('stats').onSnapshot((doc) => {
+        if (doc.exists) {
+          const d = doc.data();
+          document.getElementById('statTotalVisits').innerText = d.visits || 0;
+          document.getElementById('statTotalUsers').innerText = d.userLogins || 0;
+        }
+      });
+
+      db.collection('products').onSnapshot((snapshot) => {
+        let loaded = [];
+        snapshot.forEach((doc) => {
+          loaded.push({ id: doc.id, ...doc.data() });
+        });
+        if (loaded.length === 0) {
+          initialCatalogData.forEach(p => db.collection('products').doc(p.id).set(p));
+        } else {
+          catalog = loaded;
+          document.getElementById('statTotalProducts').innerText = catalog.length;
+          renderCategoryTabs();
+          renderCatalog();
+          renderAdminTable();
+        }
+      });
+
+      db.collection('gallery').onSnapshot((snapshot) => {
+        let loaded = [];
+        snapshot.forEach((doc) => {
+          loaded.push({ id: doc.id, ...doc.data() });
+        });
+        gallery = loaded;
+        document.getElementById('statTotalGallery').innerText = gallery.length;
+        renderGallery();
+        renderAdminGalleryTable();
+      });
+
+      db.collection('orders').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
+        document.getElementById('statTotalOrders').innerText = snapshot.size;
+        allOrders = [];
+        snapshot.forEach(doc => {
+          allOrders.push({ id: doc.id, ...doc.data() });
+        });
+        renderAdminOrders(allOrders);
+      });
+
+      db.collection('estimates').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
+        allEstimates = [];
+        snapshot.forEach(doc => {
+          allEstimates.push({ id: doc.id, ...doc.data() });
+        });
+        renderAdminEstimates(allEstimates);
+      });
+
+      db.collection('ledger_customers').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
+        allLedgerCustomers = [];
+        snapshot.forEach(doc => {
+          allLedgerCustomers.push({ id: doc.id, ...doc.data() });
+        });
+        renderAdminLedgers();
+        populateLedgerCustomerDropdown();
+      });
+
+      db.collection('ledger_entries').orderBy('timestamp', 'asc').onSnapshot((snapshot) => {
+        allLedgerEntries = [];
+        snapshot.forEach(doc => {
+          allLedgerEntries.push({ id: doc.id, ...doc.data() });
+        });
+        renderAdminLedgers();
+      });
+
+      db.collection('messages').orderBy('timestamp', 'asc').onSnapshot((snapshot) => {
+        allLiveMessages = [];
+        let hasUnread = false;
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          allLiveMessages.push({ id: doc.id, ...data });
+          if (!data.isAdminReply && !data.isRead) hasUnread = true;
+        });
+        
+        const badge = document.getElementById('chatBadgeCount');
+        const adminBadge = document.getElementById('adminUnreadBadge');
+        if (hasUnread) {
+          if (badge) badge.style.display = 'flex';
+          if (adminBadge) adminBadge.style.display = 'inline-block';
+        } else {
+          if (badge) badge.style.display = 'none';
+          if (adminBadge) adminBadge.style.display = 'none';
+        }
+
+        renderCustomerChatBox();
+        renderAdminChatThreads();
+      });
+    }
+
+    function applySettings() {
+      document.getElementById('siteLogo').src = currentSettings.logoUrl || defaultSettings.logoUrl;
+      document.getElementById('footerLogo').src = currentSettings.logoUrl || defaultSettings.logoUrl;
+      
+      document.getElementById('displayHeroImg').src = currentSettings.bannerImg || defaultSettings.bannerImg;
+      document.getElementById('displayHeroCaption').innerText = currentSettings.bannerCaption || defaultSettings.bannerCaption;
+      document.getElementById('bannerCaptionInput').value = currentSettings.bannerCaption || "";
+
+      document.getElementById('displayGstin').innerText = currentSettings.gstin;
+      document.getElementById('displayFooterGstin').innerText = currentSettings.gstin;
+      document.getElementById('displayAddress').innerText = currentSettings.address;
+      document.getElementById('displayFooterAddress').innerText = currentSettings.address;
+      document.getElementById('displayProprietor').innerText = currentSettings.proprietor;
+      document.getElementById('displayFooterProprietor').innerText = currentSettings.proprietor;
+      document.getElementById('displayPhoneTop').innerText = "+91 " + currentSettings.phone;
+      document.getElementById('displayFooterPhone').innerText = "+91 " + currentSettings.phone;
+
+      document.getElementById('headerCallBtn').href = "tel:" + currentSettings.phone;
+      document.getElementById('heroCallBtn').href = "tel:" + currentSettings.phone;
+      document.getElementById('heroWaBtn').href = "https://wa.me/" + currentSettings.wa;
+
+      document.getElementById('displayHeadlineTicker').innerText = currentSettings.headlineTicker;
+      document.getElementById('adminTickerInput').value = currentSettings.headlineTicker || defaultSettings.headlineTicker;
+
+      const rawTitle = currentSettings.heroTitle || defaultSettings.heroTitle;
+      document.getElementById('displayHeroTitle').innerHTML = rawTitle.includes('Surya Safety') ? rawTitle.replace('Surya Safety', '<span>Surya Safety</span>') : rawTitle;
+      document.getElementById('displayHeroDesc').innerText = currentSettings.heroDesc || defaultSettings.heroDesc;
+      document.getElementById('settingHeroTitle').value = rawTitle;
+      document.getElementById('settingHeroDesc').value = currentSettings.heroDesc || defaultSettings.heroDesc;
+
+      const shopBadge = document.getElementById('shopStatusBadge');
+      if (currentSettings.shopStatus === "closed") {
+        shopBadge.className = "shop-status-badge shop-closed";
+        shopBadge.innerHTML = '<i class="fa fa-door-closed"></i> दुकान बंद है (Closed)';
+      } else {
+        shopBadge.className = "shop-status-badge shop-open";
+        shopBadge.innerHTML = '<i class="fa fa-door-open"></i> दुकान खुली है (Open)';
+      }
+      document.getElementById('settingShopStatus').value = currentSettings.shopStatus || "open";
+
+      const botLogoSrc = currentSettings.botLogo || defaultSettings.botLogo;
+      document.getElementById('triggerBotImg').src = botLogoSrc;
+      document.getElementById('botHeaderImg').src = botLogoSrc;
+      document.getElementById('settingBotName').value = currentSettings.botName || "Bandhu";
+      document.getElementById('settingBotWelcome').value = currentSettings.botWelcome || defaultSettings.botWelcome;
+
+      document.getElementById('footerFbLink').href = currentSettings.fbUrl || "#";
+      document.getElementById('footerInstaLink').href = currentSettings.instaUrl || "#";
+      document.getElementById('footerMapLink').href = currentSettings.mapUrl || "https://maps.google.com/?q=Budhaura,Alauli,Khagaria";
+      document.getElementById('headerMapBtn').href = currentSettings.mapUrl || "https://maps.google.com/?q=Budhaura,Alauli,Khagaria";
+      document.getElementById('displayFooterAbout').innerText = currentSettings.footerAbout || defaultSettings.footerAbout;
+
+      document.getElementById('settingFbUrl').value = currentSettings.fbUrl || "";
+      document.getElementById('settingInstaUrl').value = currentSettings.instaUrl || "";
+      document.getElementById('settingMapUrl').value = currentSettings.mapUrl || "";
+      document.getElementById('settingFooterAbout').value = currentSettings.footerAbout || "";
+
+      const ribbonEl = document.getElementById('offerRibbon');
+      if (currentSettings.showRibbon === "yes") {
+        ribbonEl.style.display = "block";
+        document.getElementById('offerRibbonText').innerText = currentSettings.ribbonText || defaultSettings.ribbonText;
+      } else {
+        ribbonEl.style.display = "none";
+      }
+      document.getElementById('settingShowRibbon').value = currentSettings.showRibbon || "yes";
+      document.getElementById('settingRibbonText').value = currentSettings.ribbonText || defaultSettings.ribbonText;
+
+      document.getElementById('settingPhone').value = currentSettings.phone || "";
+      document.getElementById('settingWa').value = currentSettings.wa || "";
+      document.getElementById('settingProprietor').value = currentSettings.proprietor || "";
+      document.getElementById('settingGstin').value = currentSettings.gstin || "";
+      document.getElementById('settingAddress').value = currentSettings.address || "";
+
+      applyLanguageTexts();
+
+      const list = document.getElementById('bandhuMessagesList');
+      if (list && list.children.length === 0) {
+        list.innerHTML = `<div class="chat-bubble bot">${currentSettings.botWelcome || defaultSettings.botWelcome}</div>`;
+      }
+    }
+
+    /* SECURE DIGITAL KHATA & PASSWORD LOCK */
+    function checkKhataLockAndExecute(actionName) {
+      if (sessionStorage.getItem('niranjan_khata_unlocked') === 'true') {
+        if (actionName === 'openNewLedgerCustomerModal') openNewLedgerCustomerModal();
+        else if (actionName === 'openNewLedgerEntryModal') openNewLedgerEntryModal();
+      } else {
+        pendingKhataAction = actionName;
+        document.getElementById('khataPassInput').value = "";
+        openModal('khataLoginModal');
+      }
+    }
+
+    function verifyKhataPassword(e) {
+      e.preventDefault();
+      const entered = document.getElementById('khataPassInput').value.trim();
+      if (entered === khataPasswordPin) {
+        sessionStorage.setItem('niranjan_khata_unlocked', 'true');
+        closeModal('khataLoginModal');
+        if (pendingKhataAction === 'openNewLedgerCustomerModal') openNewLedgerCustomerModal();
+        else if (pendingKhataAction === 'openNewLedgerEntryModal') openNewLedgerEntryModal();
+        pendingKhataAction = null;
+      } else {
+        alert("Galat Password! Kripya sahi PIN/Password darj karein.");
+      }
+    }
+
+    function openKhataPasswordChangeModal() {
+      document.getElementById('newKhataPass').value = "";
+      openModal('changeKhataPassModal');
+    }
+
+    function handleKhataPasswordChange(e) {
+      e.preventDefault();
+      const newPin = document.getElementById('newKhataPass').value.trim();
+      if (!newPin) return;
+      db.collection('settings').doc('global').set({ khataPin: newPin }, { merge: true })
+        .then(() => {
+          khataPasswordPin = newPin;
+          closeModal('changeKhataPassModal');
+          alert("Khata ka password safalta-purvak badal diya gaya hai!");
+        }).catch(err => alert("Error: " + err.message));
+    }
+
+    function openNewLedgerCustomerModal() {
+      document.getElementById('lcName').value = "";
+      document.getElementById('lcPhone').value = "";
+      document.getElementById('lcAddress').value = "";
+      openModal('newLedgerCustomerModal');
+    }
+
+    function handleNewLedgerCustomerSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('lcName').value.trim();
+      const phone = document.getElementById('lcPhone').value.trim();
+      const address = document.getElementById('lcAddress').value.trim();
+
+      db.collection('ledger_customers').add({
+        name: name,
+        phone: phone,
+        address: address,
+        timestamp: Date.now()
+      }).then(() => {
+        closeModal('newLedgerCustomerModal');
+        alert("Naya Khata safalta-purvak ban gaya!");
+      }).catch(err => alert("Error: " + err.message));
+    }
+
+    function populateLedgerCustomerDropdown() {
+      const select = document.getElementById('leCustomerId');
+      if (!select) return;
+      select.innerHTML = allLedgerCustomers.map(c => `
+        <option value="${c.id}">${c.name} (${c.phone})</option>
+      `).join('');
+    }
+
+    function openNewLedgerEntryModal() {
+      if (allLedgerCustomers.length === 0) {
+        alert("Pehle 'Naya Khata Grahak Jodein' button se khata banayein!");
+        openNewLedgerCustomerModal();
+        return;
+      }
+      populateLedgerCustomerDropdown();
+      document.getElementById('leAmount').value = "";
+      document.getElementById('leDesc').value = "";
+      document.getElementById('lePhoto').value = "";
+      openModal('newLedgerEntryModal');
+    }
+
+    function handleNewLedgerEntrySubmit(e) {
+      e.preventDefault();
+      const custId = document.getElementById('leCustomerId').value;
+      const type = document.getElementById('leType').value;
+      const amount = parseFloat(document.getElementById('leAmount').value) || 0;
+      const desc = document.getElementById('leDesc').value.trim();
+      const photoFile = document.getElementById('lePhoto');
+
+      function saveEntryToDb(photoBase64) {
+        db.collection('ledger_entries').add({
+          customerId: custId,
+          type: type,
+          amount: amount,
+          description: desc,
+          photo: photoBase64 || "",
+          dateStr: new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' }),
+          timestamp: Date.now()
+        }).then(() => {
+          closeModal('newLedgerEntryModal');
+          alert("Len-Den Entry aur Parcha Photo save ho gayi!");
+        }).catch(err => alert("Error: " + err.message));
+      }
+
+      if (photoFile.files && photoFile.files[0]) {
+        compressImageFile(photoFile.files[0], 500, 0.7, (compressed) => {
+          saveEntryToDb(compressed);
+        });
+      } else {
+        saveEntryToDb("");
+      }
+    }
+
+    function renderAdminLedgers() {
+      const tbody = document.getElementById('adminLedgersTableBody');
+      const searchVal = (document.getElementById('ledgerSearchInp') ? document.getElementById('ledgerSearchInp').value : "").toLowerCase().trim();
+      if (!tbody) return;
+
+      let filtered = allLedgerCustomers.filter(c => 
+        (c.name || "").toLowerCase().includes(searchVal) || (c.phone || "").includes(searchVal)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding:15px;">Koi khata nahi mila.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(c => {
+        let custEntries = allLedgerEntries.filter(e => e.customerId === c.id);
+        let totalDebit = 0;
+        let totalCredit = 0;
+        custEntries.forEach(e => {
+          if (e.type === 'debit') totalDebit += e.amount;
+          else totalCredit += e.amount;
+        });
+        let balance = totalDebit - totalCredit;
+
+        return `
+          <tr>
+            <td><b>${c.name}</b><br><small>${c.address || ''}</small></td>
+            <td>${c.phone}</td>
+            <td><b style="color: ${balance > 0 ? 'red' : 'green'};">₹${balance}</b></td>
+            <td>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                <button onclick="checkKhataLockForView('${c.id}')" class="btn btn-outline" style="font-size:10px; padding:3px 6px;"><i class="fa fa-eye"></i> Khata</button>
+                <button onclick="printCustomerLedgerBill('${c.id}')" class="btn btn-primary" style="font-size:10px; padding:3px 6px;"><i class="fa fa-file-pdf"></i> Bill PDF</button>
+                <a href="https://wa.me/91${c.phone}?text=Namaste%20${encodeURIComponent(c.name)},%20Aapka%20Niranjan%20Electronics%20par%20total%20bakaya%20balance%20Rs.%20${balance}%20hai." target="_blank" class="btn btn-whatsapp" style="font-size:10px; padding:3px 6px;"><i class="fab fa-whatsapp"></i></a>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function checkKhataLockForView(custId) {
+      if (sessionStorage.getItem('niranjan_khata_unlocked') === 'true') {
+        viewCustomerLedger(custId);
+      } else {
+        pendingKhataAction = 'view_' + custId;
+        document.getElementById('khataPassInput').value = "";
+        openModal('khataLoginModal');
+      }
+    }
+
+    // Override verifyKhataPassword to support custom pending actions
+    const originalVerifyKhataPassword = verifyKhataPassword;
+    verifyKhataPassword = function(e) {
+      e.preventDefault();
+      const entered = document.getElementById('khataPassInput').value.trim();
+      if (entered === khataPasswordPin) {
+        sessionStorage.setItem('niranjan_khata_unlocked', 'true');
+        closeModal('khataLoginModal');
+        if (pendingKhataAction === 'openNewLedgerCustomerModal') openNewLedgerCustomerModal();
+        else if (pendingKhataAction === 'openNewLedgerEntryModal') openNewLedgerEntryModal();
+        else if (pendingKhataAction && pendingKhataAction.startsWith('view_')) {
+          viewCustomerLedger(pendingKhataAction.replace('view_', ''));
+        }
+        pendingKhataAction = null;
+      } else {
+        alert("Galat Password! Kripya sahi PIN/Password darj karein.");
+      }
+    }
+
+    function viewCustomerLedger(custId) {
+      const cust = allLedgerCustomers.find(c => c.id === custId);
+      if (!cust) return;
+      selectedActiveLedgerCust = cust;
+
+      const entries = allLedgerEntries.filter(e => e.customerId === custId);
+      let totalDebit = 0;
+      let totalCredit = 0;
+      entries.forEach(e => {
+        if (e.type === 'debit') totalDebit += e.amount;
+        else totalCredit += e.amount;
+      });
+      let balance = totalDebit - totalCredit;
+
+      document.getElementById('ledgerDetailHeader').innerHTML = `
+        <h3 style="font-size:15px; color:var(--primary-color);">${cust.name} (${cust.phone})</h3>
+        <p style="font-size:11px; color:var(--text-muted);">Pata: ${cust.address || 'N/A'} | Bakaya Balance: <b style="color:${balance > 0 ? 'red':'green'};">₹${balance}</b></p>
+      `;
+
+      const listContainer = document.getElementById('ledgerTransactionsList');
+      if (entries.length === 0) {
+        listContainer.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:15px;">Koi transaction entry nahi hai.</p>`;
+      } else {
+        listContainer.innerHTML = entries.map(en => `
+          <div style="background:var(--bg-light); border:1px solid var(--border-color); padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <b>${en.dateStr}</b> - ${en.description}<br>
+              <span style="color:${en.type==='debit'?'red':'green'}; font-weight:bold;">${en.type==='debit' ? 'Udhaar (Debit): -₹'+en.amount : 'Jama (Credit): +₹'+en.amount}</span>
+            </div>
+            ${en.photo ? `<a href="${en.photo}" target="_blank"><img src="${en.photo}" width="35" height="30" style="object-fit:cover; border-radius:3px;"></a>` : ''}
+          </div>
+        `).join('');
+      }
+
+      openModal('viewCustomerLedgerModal');
+    }
+
+    function printCustomerLedgerBill(custId) {
+      const cust = allLedgerCustomers.find(c => c.id === custId);
+      if (!cust) return;
+      selectedActiveLedgerCust = cust;
+      printLedgerBill();
+    }
+
+    function printLedgerBill() {
+      if (!selectedActiveLedgerCust) return;
+      const cust = selectedActiveLedgerCust;
+      const entries = allLedgerEntries.filter(e => e.customerId === cust.id);
+      let totalDebit = 0;
+      let totalCredit = 0;
+      entries.forEach(e => {
+        if (e.type === 'debit') totalDebit += e.amount;
+        else totalCredit += e.amount;
+      });
+      let balance = totalDebit - totalCredit;
+
+      const content = `
+        <p><b>Customer Name:</b> ${cust.name}</p>
+        <p><b>Mobile:</b> ${cust.phone} | <b>Address:</b> ${cust.address || 'N/A'}</p>
+        <p>--------------------------------------------------</p>
+        <p><b>TRANSACTION HISTORY:</b></p>
+        ${entries.map(e => `<p>${e.dateStr} | ${e.description} | ${e.type==='debit'?'Udhaar: Rs.'+e.amount:'Jama: Rs.'+e.amount}</p>`).join('')}
+        <p>--------------------------------------------------</p>
+        <p style="font-size:14px; font-weight:bold;">TOTAL NET BALANCE DUE (BAKAYA): Rs. ${balance}</p>
+      `;
+
+      document.getElementById('billDetailsContent').innerHTML = content;
+      window.print();
+    }
+
+    function shareLedgerWhatsApp() {
+      if (!selectedActiveLedgerCust) return;
+      const cust = selectedActiveLedgerCust;
+      const entries = allLedgerEntries.filter(e => e.customerId === cust.id);
+      let totalDebit = 0;
+      let totalCredit = 0;
+      entries.forEach(e => {
+        if (e.type === 'debit') totalDebit += e.amount;
+        else totalCredit += e.amount;
+      });
+      let balance = totalDebit - totalCredit;
+
+      const msg = encodeURIComponent(
+        "⚡ NIRANJAN ELECTRONICS - ACCOUNT STATEMENT\n\n" +
+        "Customer: " + cust.name + "\n" +
+        "Total Net Bakaya Balance: Rs. " + balance + "\n\n" +
+        "Kripya samay par bhugtan karein. Dhanyawad!"
+      );
+      window.open("https://wa.me/91" + cust.phone + "?text=" + msg, '_blank');
+    }
+
+    function renderBandhuChips() {
+      const container = document.getElementById('bandhuChipsContainer');
+      if (!container) return;
+      if (currentLang === 'hi') {
+        container.innerHTML = `
+          <span class="quick-chip" onclick="askBandhuQuick('तार कौन सा लगेगा?')">⚡ तार कौन सा लगेगा?</span>
+          <span class="quick-chip" onclick="askBandhuQuick('बिस्लेरी पानी का रेट')">💧 बिस्लेरी पानी रेट</span>
+          <span class="quick-chip" onclick="askBandhuQuick('DTH डिश सेट')">📡 DTH डिश सेट</span>
+          <span class="quick-chip" onclick="askBandhuQuick('दिवाली लड़ी')">✨ दिवाली लड़ी</span>
+          <span class="quick-chip" onclick="askBandhuQuick('आर्डर ट्रैक करें')">📦 आर्डर ट्रैक करें</span>
+        `;
+      } else {
+        container.innerHTML = `
+          <span class="quick-chip" onclick="askBandhuQuick('Wire recommendations')">⚡ Wire Selection</span>
+          <span class="quick-chip" onclick="askBandhuQuick('Bisleri Water rate')">💧 Bisleri Water Rate</span>
+          <span class="quick-chip" onclick="askBandhuQuick('DTH Dish & LNB')">📡 DTH Dish Set</span>
+          <span class="quick-chip" onclick="askBandhuQuick('Diwali Lari')">✨ Diwali Lights</span>
+          <span class="quick-chip" onclick="askBandhuQuick('Track my order')">📦 Track Order</span>
+        `;
+      }
+    }
+
+    function renderCoAdminsList() {
+      const cont = document.getElementById('coAdminsListContainer');
+      if (!cont) return;
+      cont.innerHTML = dynamicAdminEmails.map(email => `
+        <span style="background:var(--bg-light); border:1px solid var(--border-color); padding:3px 8px; border-radius:12px; font-size:11px; display:inline-flex; align-items:center; gap:5px;">
+          <i class="fa fa-user-check" style="color:var(--primary-color);"></i> ${email}
+          ${email.toLowerCase() !== PRIMARY_ADMIN_EMAIL.toLowerCase() ? `<button onclick="removeAdminEmail('${email}')" style="border:none; background:none; color:red; cursor:pointer; font-weight:bold;">&times;</button>` : '<small style="color:green;">(Owner)</small>'}
+        </span>
+      `).join('');
+    }
+
+    function addNewAdminEmail() {
+      const inp = document.getElementById('newAdminEmailInput');
+      const val = inp.value.trim().toLowerCase();
+      if (!val || !val.includes('@')) { alert("Valid email likhein!"); return; }
+      if (dynamicAdminEmails.map(e => e.toLowerCase()).includes(val)) { alert("Ye email pehle se admin hai!"); return; }
+
+      const updated = [...dynamicAdminEmails, val];
+      db.collection('settings').doc('admins').set({ list: updated })
+        .then(() => {
+          inp.value = "";
+          alert("Naya Admin safalta-purvak add ho gaya: " + val);
+        })
+        .catch(err => alert("Error: " + err.message));
+    }
+
+    function removeAdminEmail(email) {
+      if (email.toLowerCase() === PRIMARY_ADMIN_EMAIL.toLowerCase()) {
+        alert("Primary owner admin ko remove nahi kiya ja sakta!");
+        return;
+      }
+      if (confirm("Kya aap " + email + " ko admin se hatana chahte hain?")) {
+        const updated = dynamicAdminEmails.filter(e => e.toLowerCase() !== email.toLowerCase());
+        db.collection('settings').doc('admins').set({ list: updated })
+          .then(() => alert("Admin remove kar diya gaya!"))
+          .catch(err => alert("Error: " + err.message));
+      }
+    }
+
+    function verifyCurrentAdminStatus(user) {
+      const adminPanelBtn = document.getElementById('adminPanelBtn');
+      const userNameLabel = document.getElementById('userNameLabel');
+      if (!user) return;
+
+      const isUserAdmin = dynamicAdminEmails.some(e => e.toLowerCase() === (user.email || "").toLowerCase());
+      if (isUserAdmin) {
+        userNameLabel.innerText = "Admin: " + (user.displayName || user.email.split('@')[0]);
+        adminPanelBtn.style.display = 'inline-flex';
+      } else {
+        userNameLabel.innerText = user.displayName || user.email.split('@')[0];
+        adminPanelBtn.style.display = 'none';
+        switchView('customer');
+      }
+    }
+
+    function saveHeadlineTicker(e) {
+      e.preventDefault();
+      const val = document.getElementById('adminTickerInput').value.trim();
+      if (!val) return;
+      db.collection('settings').doc('global').set({ headlineTicker: val }, { merge: true })
+        .then(() => alert("Headline Ticker Live Update ho gaya!"))
+        .catch(err => alert("Error: " + err.message));
+    }
+
+    function saveShopStatusAndHero(e) {
+      e.preventDefault();
+      const updateData = {
+        shopStatus: document.getElementById('settingShopStatus').value,
+        heroTitle: document.getElementById('settingHeroTitle').value.trim(),
+        heroDesc: document.getElementById('settingHeroDesc').value.trim()
+      };
+      db.collection('settings').doc('global').set(updateData, { merge: true })
+        .then(() => alert("Shop Status aur Headings Live Update ho gayi!"))
+        .catch(err => alert("Error: " + err.message));
+    }
+
+    function saveBotAndFeatureSettings(e) {
+      e.preventDefault();
+      const botFile = document.getElementById('settingBotPhotoFile');
+      let updateData = {
+        botName: document.getElementById('settingBotName').value.trim() || "Bandhu",
+        botWelcome: document.getElementById('settingBotWelcome').value.trim() || defaultSettings.botWelcome,
+        showRibbon: document.getElementById('settingShowRibbon').value,
+        ribbonText: document.getElementById('settingRibbonText').value.trim() || defaultSettings.ribbonText
+      };
+
+      function pushBotDb() {
+        db.collection('settings').doc('global').set(updateData, { merge: true })
+          .then(() => alert("Chatbot Logo & Settings Live Update ho gayi!"))
+          .catch(err => alert("Error: " + err.message));
+      }
+
+      if (botFile.files && botFile.files[0]) {
+        compressImageFile(botFile.files[0], 200, 0.8, (compressedData) => {
+          updateData.botLogo = compressedData;
+          pushBotDb();
+        });
+      } else {
+        pushBotDb();
+      }
+    }
+
+    function submitWholesaleEstimate(e) {
+      e.preventDefault();
+      const name = document.getElementById('estName').value.trim();
+      const phone = document.getElementById('estPhone').value.trim();
+      const list = document.getElementById('estList').value.trim();
+      const fileInput = document.getElementById('estFile');
+      const submitBtn = document.getElementById('submitEstBtn');
+
+      submitBtn.innerText = "Bheja jaa raha hai...";
+      submitBtn.disabled = true;
+
+      function finalizeSubmission(photoNote) {
+        const waMsg = encodeURIComponent(
+          "⚡ NAYA WHOLESALE / ELECTRICIAN ESTIMATE\n\n" +
+          "Mistry/Customer: " + name + "\n" +
+          "Mobile: " + phone + "\n" +
+          "Samaan ki List:\n" + list + "\n" +
+          (photoNote ? ("\n" + photoNote) : "") +
+          "\nKripya wholesale discount estimate banakar bhejein."
+        );
+
+        closeModal('wholesaleEstimateModal');
+        submitBtn.innerText = "Send to Proprietor via WhatsApp";
+        submitBtn.disabled = false;
+        window.open("https://wa.me/91" + currentSettings.wa + "?text=" + waMsg, '_blank');
+      }
+
+      if (fileInput.files && fileInput.files[0]) {
+        compressImageFile(fileInput.files[0], 600, 0.7, (compressedPhoto) => {
+          db.collection('estimates').add({
+            name: name,
+            phone: phone,
+            list: list,
+            parchaImg: compressedPhoto,
+            time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+            timestamp: Date.now()
+          }).then(() => {
+            finalizeSubmission("📌 Parcha Photo Cloud Database me upload kar di gayi hai.");
+          }).catch(() => {
+            finalizeSubmission("(Photo upload fail, kripya direct WhatsApp par photo bhejein)");
+          });
+        });
+      } else {
+        finalizeSubmission("");
+      }
+    }
+
+    function renderAdminEstimates(estimates) {
+      const tbody = document.getElementById('adminEstimatesTableBody');
+      if (!tbody) return;
+      if (estimates.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:15px;">Koi naya wholesale estimate nahi aaya hai.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = estimates.map(e => `
+        <tr>
+          <td><small>${e.time || '-'}</small></td>
+          <td><b>${e.name}</b></td>
+          <td>${e.phone}</td>
+          <td style="max-width:200px; white-space:pre-line;">${e.list}</td>
+          <td>
+            ${e.parchaImg ? `<a href="${e.parchaImg}" target="_blank"><img src="${e.parchaImg}" width="40" height="35" style="object-fit:cover; border-radius:3px;"></a>` : '<span style="color:#94a3b8;">No Photo</span>'}
+          </td>
+          <td>
+            <a href="https://wa.me/91${e.phone}?text=Namaste%20${encodeURIComponent(e.name)},%20Aapka%20Wholesale%20Estimate%20Niranjan%20Electronics%20ko%20mil%20gaya%20hai." target="_blank" class="btn btn-call" style="font-size:10px; padding:3px 6px;">
+              <i class="fab fa-whatsapp"></i> Reply
+            </a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    /* Bandhu AI Assistant */
+    function toggleBandhuChat() {
+      const box = document.getElementById('bandhuBox');
+      box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+      if (box.style.display === 'flex') {
+        const list = document.getElementById('bandhuMessagesList');
+        setTimeout(() => { list.scrollTop = list.scrollHeight; }, 100);
+      }
+    }
+
+    function toggleVoiceReply() {
+      voiceReplyEnabled = !voiceReplyEnabled;
+      const btn = document.getElementById('voiceToggleBtn');
+      btn.innerHTML = voiceReplyEnabled ? '<i class="fa fa-volume-up"></i>' : '<i class="fa fa-volume-mute" style="color:#94a3b8;"></i>';
+    }
+
+    function speakText(text) {
+      if (!voiceReplyEnabled || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const clean = text.replace(/<[^>]*>?/gm, '');
+      const utterance = new SpeechSynthesisUtterance(clean);
+      utterance.lang = (currentLang === 'hi') ? 'hi-IN' : 'en-IN';
+      utterance.rate = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function startVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Aapka browser live voice input support nahi karta, kripya Google Chrome use karein.");
+        return;
+      }
+
+      const micBtn = document.getElementById('micBtn');
+      if (recognition) {
+        recognition.stop();
+        recognition = null;
+        micBtn.classList.remove('mic-recording');
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = (currentLang === 'hi') ? 'hi-IN' : 'en-US';
+      recognition.interimResults = false;
+
+      micBtn.classList.add('mic-recording');
+
+      recognition.onresult = function(event) {
+        const spoken = event.results[0][0].transcript;
+        document.getElementById('bandhuInput').value = spoken;
+        micBtn.classList.remove('mic-recording');
+        recognition = null;
+        sendBandhuMsg();
+      };
+
+      recognition.onerror = function() {
+        micBtn.classList.remove('mic-recording');
+        recognition = null;
+      };
+
+      recognition.onend = function() {
+        micBtn.classList.remove('mic-recording');
+        recognition = null;
+      };
+
+      recognition.start();
+    }
+
+    function askBandhuQuick(topic) {
+      document.getElementById('bandhuInput').value = topic;
+      sendBandhuMsg();
+    }
+
+    function sendBandhuMsg() {
+      const inp = document.getElementById('bandhuInput');
+      const text = inp.value.trim();
+      if (!text) return;
+
+      const list = document.getElementById('bandhuMessagesList');
+      list.innerHTML += `<div class="chat-bubble user">${text}</div>`;
+      inp.value = "";
+      list.scrollTop = list.scrollHeight;
+
+      setTimeout(() => {
+        let reply = generateComprehensiveBandhuReply(text.toLowerCase());
+        list.innerHTML += `<div class="chat-bubble bot">${reply}</div>`;
+        list.scrollTop = list.scrollHeight;
+        speakText(reply);
+      }, 350);
+    }
+
+    function generateComprehensiveBandhuReply(q) {
+      const isHi = (currentLang === 'hi');
+
+      let matchedProds = catalog.filter(p => {
+        const t = (p.title || "").toLowerCase();
+        const c = (p.category || "").toLowerCase();
+        const s = (p.specs || "").toLowerCase();
+        return t.includes(q) || c.includes(q) || q.includes(t) || q.includes(c);
+      });
+
+      if (matchedProds.length > 0) {
+        const top = matchedProds.slice(0, 3);
+        let listText = top.map(p => `• <b>${p.title}</b>: ${p.price} (${p.stock === 'out' ? '❌ Out of stock' : '✅ In Stock'})`).join('<br>');
+        return isHi ? 
+          `Hamari dukan me ye samaan uplabdh hai:<br>${listText}<br><br>Cart me add karke ya WhatsApp se turant mangwa sakte hain.` :
+          `Found in store catalog:<br>${listText}<br><br>You can add directly to cart or order via WhatsApp.`;
+      }
+
+      if (q.includes("address") || q.includes("pata") || q.includes("kahan") || q.includes("location") || q.includes("दुकान") || q.includes("पता")) {
+        return isHi ?
+          `📍 <b>Dukan ka Pata:</b> ${currentSettings.address}<br>Proprietor: <b>${currentSettings.proprietor}</b><br>GSTIN: <b>${currentSettings.gstin}</b><br>Phone: <b>+91 ${currentSettings.phone}</b>` :
+          `📍 <b>Store Address:</b> ${currentSettings.address}<br>Proprietor: <b>${currentSettings.proprietor}</b><br>GSTIN: <b>${currentSettings.gstin}</b><br>Helpline: <b>+91 ${currentSettings.phone}</b>`;
+      }
+
+      if (q.includes("khuli") || q.includes("band") || q.includes("timing") || q.includes("open") || q.includes("closed")) {
+        const statusText = (currentSettings.shopStatus === 'open') ? '🟢 Abhi dukan KHULI hai (Open)' : '🔴 Dukan abhi BAND hai (Closed)';
+        return isHi ?
+          `${statusText}. Aap online 24x7 order place kar sakte hain ya helpline par call kar sakte hain.` :
+          `${statusText}. You can still place online orders anytime or contact our helpline.`;
+      }
+
+      if (q.includes("wire") || q.includes("taar") || q.includes("copper") || q.includes("तार")) {
+        return isHi ? 
+          "⚡ <b>हाउस वायरिंग सुझाव (Surya Turbo Flex):</b><br>• 1.0 sq mm: Light & Fan points ke liye<br>• 1.5 sq mm: Power Socket & Kitchen ke liye<br>• 2.5 / 4.0 sq mm: AC & Geyser ke liye 100% pure copper wire uplabdh hai." :
+          "⚡ <b>Wiring Guide (Surya Turbo Flex):</b><br>• 1.0 sq mm: Lighting & Fans<br>• 1.5 sq mm: Power Plugs<br>• 2.5 / 4.0 sq mm: Heavy loads (AC/Geyser). Available in genuine copper coil.";
+      }
+
+      if (q.includes("bisleri") || q.includes("water") || q.includes("paani") || q.includes("jar") || q.includes("पानी")) {
+        return isHi ? 
+          "💧 <b>Bisleri Original Water Supply:</b><br>20 Litre bulk mineral jar matra ₹80 me available hai. Shaadi, function aur dukan ke liye bulk delivery uplabdh hai." :
+          "💧 <b>Bisleri Pure Mineral Water:</b><br>20 Litre bulk jar at just ₹80. Bulk orders for events & shops available.";
+      }
+
+      if (q.includes("dth") || q.includes("dish") || q.includes("lnb") || q.includes("छतरी") || q.includes("डिश")) {
+        return isHi ?
+          "📡 <b>DTH Dish & Accessories:</b><br>Ku-Band Heavy Dish Antennas (₹650), Full HD 4K LNBF (₹180), aur RG-6 coaxial copper cables ready in stock hain." :
+          "📡 <b>DTH Accessories:</b><br>Ku-Band Heavy Dish Antennas (₹650), Full HD LNBF (₹180), and RG-6 Dual Shield cables ready in stock.";
+      }
+
+      if (q.includes("parcha") || q.includes("wholesale") || q.includes("mistry") || q.includes("rate") || q.includes("discount") || q.includes("पर्चा")) {
+        return isHi ?
+          "📋 <b>Electrician Wholesale Scheme:</b><br>Mistry aur contractor bhaiyon ke liye special wholesale rate diya jata hai. Upar diye gaye <b>'Wholesale Parcha'</b> button par tap karke apni list ya parcha bhejein!" :
+          "📋 <b>Wholesale Estimate:</b><br>Special contractor discounts available. Tap <b>'Bulk Estimate'</b> at top to submit your requirement list.";
+      }
+
+      if (q.includes("track") || q.includes("order") || q.includes("status") || q.includes("आर्डर")) {
+        const user = auth.currentUser;
+        if (!user) return isHi ? "📦 Apna order dekhne ke liye Profile button par jaakar Phone Number se search karein ya Sign In karein." : "📦 Please search with your Phone number or Sign In under Profile to view orders.";
+        const userOrders = allOrders.filter(o => o.userEmail === user.email);
+        if (userOrders.length === 0) return isHi ? "Aapke account par abhi koi order nahi mila." : "No orders found under this account.";
+        const last = userOrders[0];
+        return `📦 <b>Latest Order (${last.orderId}):</b><br>Status: <b>${last.status || 'Pending'}</b><br>Samaan: ${last.items}`;
+      }
+
+      return isHi ?
+        `Main Niranjan Electronics ka saathi hoon. Aap mujhse kisi bhi samaan ka rate, stock, wiring guide, dukan ka pata ya delivery ke baare me pooch sakte hain ya bol kar baat kar sakte hain!` :
+        `I am your store assistant. Feel free to ask about any product prices, stock status, wiring recommendations, or delivery details!`;
+    }
+
+    /* Direct Customer-to-Admin Cloud Live Chat */
+    function openDirectChatModal() {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Dukan se live chat karne ke liye pehle Sign In karein!");
+        openModal('authModal');
+        return;
+      }
+      renderCustomerChatBox();
+      openModal('directChatModal');
+    }
+
+    function sendCustomerLiveMessage() {
+      const user = auth.currentUser;
+      if (!user) return;
+      const inp = document.getElementById('custDirectChatInp');
+      const text = inp.value.trim();
+      if (!text) return;
+
+      db.collection('messages').add({
+        senderEmail: user.email,
+        senderName: user.displayName || user.email.split('@')[0],
+        text: text,
+        isAdminReply: false,
+        isRead: false,
+        timestamp: Date.now(),
+        timeStr: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }).then(() => {
+        inp.value = "";
+      });
+    }
+
+    function renderCustomerChatBox() {
+      const user = auth.currentUser;
+      const container = document.getElementById('customerLiveChatMsgs');
+      if (!user || !container) return;
+
+      const myMsgs = allLiveMessages.filter(m => m.senderEmail === user.email);
+      if (myMsgs.length === 0) {
+        container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:20px;">Dukan ke sath koi baat shuru karein (e.g. Bulk discount, stock availability)...</div>`;
+        return;
+      }
+
+      container.innerHTML = myMsgs.map(m => `
+        <div style="align-self: ${m.isAdminReply ? 'flex-start' : 'flex-end'}; background: ${m.isAdminReply ? 'var(--white)' : 'var(--primary-color)'}; color: ${m.isAdminReply ? 'var(--text-main)' : '#FFFFFF'}; padding: 6px 10px; border-radius: var(--btn-radius); max-width: 80%; border: 1px solid var(--border-color); font-size: 12px;">
+          <b>${m.isAdminReply ? 'Niranjan Electronics (Admin)' : 'You'}</b>: ${m.text}
+          <div style="font-size: 9px; opacity: 0.7; text-align: right; margin-top: 2px;">${m.timeStr}</div>
+        </div>
+      `).join('');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function renderAdminChatThreads() {
+      const container = document.getElementById('adminLiveChatThreads');
+      if (!container) return;
+
+      if (allLiveMessages.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:10px;">Koi naya message nahi aaya hai.</p>`;
+        return;
+      }
+
+      const grouped = {};
+      allLiveMessages.forEach(m => {
+        if (!grouped[m.senderEmail]) grouped[m.senderEmail] = [];
+        grouped[m.senderEmail].push(m);
+      });
+
+      container.innerHTML = Object.keys(grouped).map(email => {
+        const msgs = grouped[email];
+        const lastMsg = msgs[msgs.length - 1];
+        return `
+          <div style="background:var(--white); border:1px solid var(--border-color); border-radius:var(--btn-radius); padding:8px; margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <b>${lastMsg.senderName} (${email})</b>
+              <span style="font-size:10px; color:var(--text-muted);">${lastMsg.timeStr}</span>
+            </div>
+            <div style="font-size:11px; color:var(--text-main); margin-bottom:6px;">Latest: ${lastMsg.text}</div>
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="adminReplyInp_${email.replace(/[^a-zA-Z0-9]/g, '')}" class="form-control" style="font-size:11px; padding:4px 6px;" placeholder="Customer ko reply likhein...">
+              <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="sendAdminReply('${email}', '${lastMsg.senderName}')">Reply</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function sendAdminReply(userEmail, userName) {
+      const cleanId = userEmail.replace(/[^a-zA-Z0-9]/g, '');
+      const inp = document.getElementById('adminReplyInp_' + cleanId);
+      const text = inp.value.trim();
+      if (!text) return;
+
+      db.collection('messages').add({
+        senderEmail: userEmail,
+        senderName: userName,
+        text: text,
+        isAdminReply: true,
+        isRead: true,
+        timestamp: Date.now(),
+        timeStr: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }).then(() => {
+        inp.value = "";
+        allLiveMessages.filter(m => m.senderEmail === userEmail && !m.isAdminReply && !m.isRead).forEach(m => {
+          db.collection('messages').doc(m.id).update({ isRead: true });
+        });
+        alert("Reply customer ko live send ho gaya!");
+      });
+    }
+
+    /* Digital Bill Print Function */
+    function printCustomerOrderBill(orderId) {
+      const order = allOrders.find(o => o.orderId === orderId);
+      if (!order) return;
+
+      const content = `
+        <p><b>Order ID:</b> ${order.orderId}</p>
+        <p><b>Date & Time:</b> ${order.time}</p>
+        <p><b>Customer Name:</b> ${order.customerName}</p>
+        <p><b>Mobile:</b> ${order.phone}</p>
+        <p><b>Delivery Address:</b> ${order.address}</p>
+        <p><b>Current Status:</b> ${order.status || 'Confirmed'}</p>
+        <p>--------------------------------------------------</p>
+        <p><b>ITEMS LIST:</b></p>
+        <p style="white-space: pre-line; line-height: 1.6;">${order.items.split(', ').join('\n')}</p>
+        <p>--------------------------------------------------</p>
+        ${order.notes ? `<p><b>Special Instructions:</b> ${order.notes}</p>` : ''}
+      `;
+
+      document.getElementById('billDetailsContent').innerHTML = content;
+      window.print();
+    }
+
+    /* Customer Profile, Orders Search & View */
+    function openCustomerProfileModal() {
+      const user = auth.currentUser;
+      const profileInfo = document.getElementById('custProfileInfo');
+
+      if (user) {
+        profileInfo.innerHTML = `<b>${user.displayName || user.email.split('@')[0]}</b><br>Email: ${user.email}`;
+        renderFilteredOrders(allOrders.filter(o => o.userEmail === user.email));
+      } else {
+        profileInfo.innerHTML = `<span style="color:var(--text-muted);">Apna phone number daalkar ya Google Sign In karke order check karein.</span>`;
+        renderFilteredOrders([]);
+      }
+
+      openModal('customerProfileModal');
+    }
+
+    function searchOrdersByPhone() {
+      const phone = document.getElementById('trackOrderPhoneInput').value.trim();
+      if (!phone || phone.length < 10) {
+        alert("Pura 10-digit mobile number dalein!");
+        return;
+      }
+      const matched = allOrders.filter(o => (o.phone || '').includes(phone));
+      renderFilteredOrders(matched);
+    }
+
+    function renderFilteredOrders(ordersList) {
+      const ordersListContainer = document.getElementById('custOrdersHistoryList');
+      if (ordersList.length === 0) {
+        ordersListContainer.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:15px;">Koi order nahi mila.</p>`;
+      } else {
+        ordersListContainer.innerHTML = ordersList.map(o => `
+          <div style="background:var(--white); border:1px solid var(--border-color); border-radius:var(--btn-radius); padding:10px; margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <b style="color:var(--primary-color);">${o.orderId}</b>
+              <span class="status-badge status-${o.status || 'Pending'}">${o.status || 'Pending'}</span>
+            </div>
+            <div style="font-size:11px; margin-bottom:4px;">${o.items}</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-bottom:6px;">${o.time} (Tel: ${o.phone})</div>
+            <button onclick="printCustomerOrderBill('${o.orderId}')" class="btn btn-outline" style="font-size:10px; padding:3px 8px;">
+              <i class="fa fa-print"></i> Download / Print Bill
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    /* Order Placement */
+    function addToCart(productId) {
+      const product = catalog.find(p => p.id === productId);
+      if (!product) return;
+      if (product.stock === "out") {
+        alert("Maaf karein, ye samaan abhi Out of Stock (khatam) hai!");
+        return;
+      }
+      cart.push(product);
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+      alert(product.title + " added to cart!");
+    }
+
+    function quickOrderNow(productId) {
+      const product = catalog.find(p => p.id === productId);
+      if (!product) return;
+      if (product.stock === "out") {
+        alert("Maaf karein, ye samaan abhi Out of Stock (khatam) hai!");
+        return;
+      }
+      cart = [product];
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+      openOrderCheckoutModal();
+    }
+
+    function updateCartUI() {
+      document.getElementById('cartBadgeCount').innerText = cart.length;
+      const list = document.getElementById('cartItemsList');
+      if (cart.length === 0) {
+        list.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:15px;">Aapka cart khaali hai.</p>`;
+        document.getElementById('cartTotalSummary').innerText = "";
+        return;
+      }
+      list.innerHTML = cart.map((item, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border-color);">
+          <div><b>${item.title}</b><div style="font-size:10px; color:var(--text-muted);">${item.price}</div></div>
+          <button onclick="removeFromCart(${idx})" style="color:red; border:none; background:none; cursor:pointer;"><i class="fa fa-trash"></i></button>
+        </div>
+      `).join('');
+      document.getElementById('cartTotalSummary').innerText = "Total Items: " + cart.length;
+    }
+
+    function removeFromCart(idx) {
+      cart.splice(idx, 1);
+      localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function openOrderCheckoutModal() {
+      if (cart.length === 0) { alert("Pehle cart me koi samaan add karein!"); return; }
+      
+      const preview = document.getElementById('checkoutItemsListPreview');
+      preview.innerHTML = cart.map(i => `<div>• <b>${i.title}</b> (${i.price})</div>`).join('');
+
+      closeModal('cartModal');
+      openModal('checkoutModal');
+    }
+
+    function submitCustomerOrder(e) {
+      e.preventDefault();
+      const user = auth.currentUser;
+      const custName = document.getElementById('orderCustName').value.trim();
+      const phone = document.getElementById('orderPhone').value.trim();
+      const address = document.getElementById('orderAddress').value.trim();
+      const notes = document.getElementById('orderNotes').value.trim();
+
+      const orderData = {
+        orderId: "NE-" + Math.floor(100000 + Math.random() * 900000),
+        customerName: custName,
+        userEmail: user ? user.email : "guest",
+        phone: phone,
+        address: address,
+        notes: notes,
+        items: cart.map(i => i.title + " (" + i.price + ")").join(", "),
+        status: "Pending",
+        time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+        timestamp: Date.now()
+      };
+
+      db.collection('orders').add(orderData).then(() => {
+        const waMsg = encodeURIComponent(
+          "⚡ NAYA ORDER - NIRANJAN ELECTRONICS\n\n" +
+          "Order ID: " + orderData.orderId + "\n" +
+          "Grahak: " + orderData.customerName + "\n" +
+          "Mobile: " + orderData.phone + "\n" +
+          "Pata: " + orderData.address + "\n" +
+          "Samaan: " + orderData.items + "\n" +
+          (notes ? ("Note: " + notes) : "")
+        );
+        cart = [];
+        localStorage.setItem('niranjan_user_cart', JSON.stringify(cart));
+        updateCartUI();
+        closeModal('checkoutModal');
+        alert("Order Safalta-purvak confirm ho gaya! Order ID: " + orderData.orderId);
+        window.open("https://wa.me/91" + currentSettings.wa + "?text=" + waMsg, '_blank');
+      }).catch(err => alert("Error saving order: " + err.message));
+    }
+
+    function renderAdminOrders(orders) {
+      const tbody = document.getElementById('adminOrdersTableBody');
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:15px;">Koi naya order nahi aaya hai.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td><b style="color:var(--primary-color);">${o.orderId}</b></td>
+          <td><b>${o.customerName}</b><br><small>${o.userEmail}</small></td>
+          <td>${o.items}</td>
+          <td>${o.address}<br><small>Tel: ${o.phone}</small></td>
+          <td>
+            <select onchange="updateOrderStatus('${o.id}', this.value)" class="form-control" style="font-size:10px; padding:3px;">
+              <option value="Pending" ${o.status==='Pending'?'selected':''}>🟡 Pending</option>
+              <option value="Packed" ${o.status==='Packed'?'selected':''}>🔵 Packed</option>
+              <option value="Dispatched" ${o.status==='Dispatched'?'selected':''}>🚚 Dispatched</option>
+              <option value="Delivered" ${o.status==='Delivered'?'selected':''}>🟢 Delivered</option>
+            </select>
+          </td>
+          <td>
+            <div style="display:flex; gap:4px;">
+              <button onclick="printCustomerOrderBill('${o.orderId}')" class="btn btn-outline" style="font-size:10px; padding:3px 6px;" title="Print Bill">
+                <i class="fa fa-print"></i>
+              </button>
+              <a href="https://wa.me/91${o.phone}?text=Namaste%20${encodeURIComponent(o.customerName)},%20Aapka%20Order%20${o.orderId}%20Niranjan%20Electronics%20se%20update%20ho%20gaya%20hai." target="_blank" class="btn btn-call" style="font-size:10px; padding:3px 6px;">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateOrderStatus(docId, newStatus) {
+      db.collection('orders').doc(docId).update({ status: newStatus })
+        .then(() => alert("Order Status live update ho gaya: " + newStatus))
+        .catch(err => alert("Error: " + err.message));
+    }
+
+    function updateStockStatus(docId, newStock) {
+      db.collection('products').doc(docId).update({ stock: newStock })
+        .then(() => alert("Stock Status live update ho gaya: " + newStock))
+        .catch(err => alert("Error: " + err.message));
+    }
+
+    function saveStoreSettings(e) {
+      e.preventDefault();
+      const logoFile = document.getElementById('settingLogoFileInput');
+
+      let updateData = {
+        phone: document.getElementById('settingPhone').value.trim(),
+        wa: document.getElementById('settingWa').value.trim(),
+        proprietor: document.getElementById('settingProprietor').value.trim(),
+        gstin: document.getElementById('settingGstin').value.trim(),
+        address: document.getElementById('settingAddress').value.trim(),
+        fbUrl: document.getElementById('settingFbUrl').value.trim(),
+        instaUrl: document.getElementById('settingInstaUrl').value.trim(),
+        mapUrl: document.getElementById('settingMapUrl').value.trim(),
+        footerAbout: document.getElementById('settingFooterAbout').value.trim()
+      };
+
+      function pushSettingsToDb() {
+        db.collection('settings').doc('global').set(updateData, { merge: true })
+          .then(() => alert("Store Details, Social Media & Footer Live Update Ho Gaye!"))
+          .catch(err => alert("Error: " + err.message));
+      }
+
+      if (logoFile.files && logoFile.files[0]) {
+        compressImageFile(logoFile.files[0], 400, 0.8, (compressedData) => {
+          updateData.logoUrl = compressedData;
+          pushSettingsToDb();
+        });
+      } else {
+        pushSettingsToDb();
+      }
+    }
+
+    function saveBannerCustomization(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('bannerFileInput');
+      const captionInput = document.getElementById('bannerCaptionInput').value.trim();
+      const saveBtn = document.getElementById('saveBannerBtn');
+
+      saveBtn.innerText = "Publishing to Cloud...";
+      saveBtn.disabled = true;
+
+      let updateData = {};
+      if (captionInput) updateData.bannerCaption = captionInput;
+
+      function pushBannerToDb(imgString) {
+        if (imgString) updateData.bannerImg = imgString;
+        db.collection('settings').doc('global').set(updateData, { merge: true })
+          .then(() => {
+            alert("Banner Photo Live Update Ho Gaya!");
+            saveBtn.innerText = "Save & Publish Live";
+            saveBtn.disabled = false;
+          })
+          .catch(err => {
+            alert("Error: " + err.message);
+            saveBtn.innerText = "Save & Publish Live";
+            saveBtn.disabled = false;
+          });
+      }
+
+      if (fileInput.files && fileInput.files[0]) {
+        compressImageFile(fileInput.files[0], 800, 0.7, (compressedData) => {
+          pushBannerToDb(compressedData);
+        });
+      } else {
+        pushBannerToDb(null);
+      }
+    }
+
+    function openAddProductModal() {
+      existingProductBeingEdited = null;
+      document.getElementById('productModalTitle').innerText = "Add New Product";
+      document.getElementById('editProductId').value = "";
+      document.getElementById('pName').value = "";
+      document.getElementById('pPrice').value = "";
+      document.getElementById('pSpecs').value = "";
+      document.getElementById('pImgUrl').value = "";
+      document.getElementById('pImgFile').value = "";
+      document.getElementById('pCategorySelect').value = "Wires";
+      document.getElementById('pCustomCategory').value = "";
+      document.getElementById('pStockStatus').value = "in";
+      document.getElementById('customCategoryWrap').style.display = "none";
+      document.getElementById('saveProductBtn').innerText = "Save Product";
+      openModal('productModal');
+    }
+
+    function openEditProductModal(id) {
+      const prod = catalog.find(p => p.id === id);
+      if (!prod) return;
+
+      existingProductBeingEdited = prod;
+      document.getElementById('productModalTitle').innerText = "Edit Product Details";
+      document.getElementById('editProductId').value = prod.id;
+      document.getElementById('pName').value = prod.title || "";
+      document.getElementById('pPrice').value = prod.price || "";
+      document.getElementById('pSpecs').value = prod.specs || "";
+      document.getElementById('pImgUrl').value = "";
+      document.getElementById('pImgFile').value = "";
+      document.getElementById('pStockStatus').value = prod.stock || "in";
+      
+      const categorySelect = document.getElementById('pCategorySelect');
+      const standardCategories = ["Wires", "DTH", "Diwali", "Switches", "Pipes", "Appliances", "Lighting", "Bisleri"];
+      
+      if (standardCategories.includes(prod.category)) {
+        categorySelect.value = prod.category;
+        document.getElementById('customCategoryWrap').style.display = "none";
+      } else {
+        categorySelect.value = "CUSTOM";
+        document.getElementById('customCategoryWrap').style.display = "block";
+        document.getElementById('pCustomCategory').value = prod.category;
+      }
+
+      document.getElementById('saveProductBtn').innerText = "Update Product";
+      openModal('productModal');
+    }
+
+    function handleCategorySelectChange() {
+      const select = document.getElementById('pCategorySelect');
+      const customWrap = document.getElementById('customCategoryWrap');
+      customWrap.style.display = (select.value === "CUSTOM") ? "block" : "none";
+    }
+
+    function handleProductFormSubmit(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editProductId').value;
+      const pName = document.getElementById('pName').value.trim();
+      const categorySelectVal = document.getElementById('pCategorySelect').value;
+      const customCategoryVal = document.getElementById('pCustomCategory').value.trim();
+      const finalCategory = (categorySelectVal === "CUSTOM") ? (customCategoryVal || "General") : categorySelectVal;
+      
+      const pPrice = document.getElementById('pPrice').value.trim();
+      const pSpecs = document.getElementById('pSpecs').value.trim();
+      const pStock = document.getElementById('pStockStatus').value;
+      const imgFile = document.getElementById('pImgFile');
+      const imgUrl = document.getElementById('pImgUrl').value.trim();
+      const saveBtn = document.getElementById('saveProductBtn');
+
+      saveBtn.innerText = "Saving to Cloud...";
+      saveBtn.disabled = true;
+
+      function pushToFirestore(finalImg) {
+        let productData = {
+          title: pName,
+          category: finalCategory,
+          price: pPrice,
+          specs: pSpecs,
+          stock: pStock,
+          updatedAt: Date.now()
+        };
+
+        if (finalImg) {
+          productData.img = finalImg;
+        } else if (!editId) {
+          productData.img = 'https://via.placeholder.com/300x200?text=Product';
+        }
+
+        let actionPromise = editId ? db.collection('products').doc(editId).set(productData, { merge: true }) : db.collection('products').add(productData);
+
+        actionPromise.then(() => {
+          closeModal('productModal');
+          alert(editId ? "Product Update Ho Gaya!" : "Naya Product Add Ho Gaya!");
+          saveBtn.innerText = "Save Product";
+          saveBtn.disabled = false;
+        }).catch(err => {
+          alert("Error: " + err.message);
+          saveBtn.innerText = "Save Product";
+          saveBtn.disabled = false;
+        });
+      }
+
+      if (imgFile.files && imgFile.files[0]) {
+        compressImageFile(imgFile.files[0], 500, 0.7, (compressed) => {
+          pushToFirestore(compressed);
+        });
+      } else if (imgUrl) {
+        pushToFirestore(imgUrl);
+      } else {
+        pushToFirestore(null);
+      }
+    }
+
+    function removeProduct(id) {
+      if (confirm("Kya aap ise Cloud Database se hatana chahte hain?")) {
+        db.collection('products').doc(id).delete()
+          .then(() => alert("Product Delete Ho Gaya!"))
+          .catch(err => alert("Error: " + err.message));
+      }
+    }
+
+    function renderCategoryTabs() {
+      const container = document.getElementById('categoryTabsContainer');
+      let categoriesSet = new Set(["All", "Wires", "DTH", "Diwali", "Switches", "Pipes", "Appliances", "Lighting", "Bisleri"]);
+      catalog.forEach(p => { if (p.category) categoriesSet.add(p.category); });
+      const categories = Array.from(categoriesSet);
+      container.innerHTML = categories.map(cat => `
+        <button class="cat-tab-btn ${activeFilter === cat ? 'active' : ''}" onclick="filterCategory('${cat}', this)">${cat}</button>
+      `).join('');
+    }
+
+    function filterCategory(cat, btnElement) {
+      activeFilter = cat;
+      document.querySelectorAll('.cat-tab-btn').forEach(b => b.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+      renderCatalog();
+    }
+
+    function handleSearchAndFilter() {
+      searchQuery = document.getElementById('productSearchInput').value.toLowerCase().trim();
+      renderCatalog();
+    }
+
+    function renderCatalog() {
+      const container = document.getElementById('productGridContainer');
+      let filtered = catalog.filter(item => {
+        const matchesCategory = (activeFilter === "All") || (item.category === activeFilter);
+        const matchesSearch = (item.title || "").toLowerCase().includes(searchQuery) || 
+                              (item.specs || "").toLowerCase().includes(searchQuery) ||
+                              (item.category || "").toLowerCase().includes(searchQuery);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; background: var(--white); border-radius: 8px;">Koi item nahi mila.</div>`;
+        return;
+      }
+
+      const isHi = (currentLang === 'hi');
+
+      container.innerHTML = filtered.map(p => `
+        <div class="product-card">
+          <div class="card-img-wrap">
+            <span class="tag-brand">ORIGINAL</span>
+            <span class="tag-stock ${p.stock === 'out' ? 'stock-out' : 'stock-in'}">
+              ${p.stock === 'out' ? (isHi ? 'खत्म है' : 'Out of Stock') : (isHi ? 'उपलब्ध' : 'In Stock')}
+            </span>
+            <img src="${p.img}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/200x150?text=Product'">
+          </div>
+          <div class="card-body">
+            <span class="product-category">${p.category}</span>
+            <h4 class="product-title">${p.title}</h4>
+            <p class="product-specs">${p.specs}</p>
+            <div class="card-footer">
+              <span class="product-price">${p.price}</span>
+              <div class="card-actions-row">
+                <button onclick="addToCart('${p.id}')" class="btn btn-outline" ${p.stock === 'out' ? 'disabled style="opacity:0.5;"' : ''}><i class="fa fa-cart-plus"></i> Cart</button>
+                <button onclick="quickOrderNow('${p.id}')" class="btn btn-primary" ${p.stock === 'out' ? 'disabled style="opacity:0.5;"' : ''}>Order</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderAdminTable() {
+      const tbody = document.getElementById('adminTableBody');
+      tbody.innerHTML = catalog.map(p => `
+        <tr>
+          <td><img src="${p.img}" width="35" height="30" style="object-fit:cover; border-radius:3px;"></td>
+          <td><b>${p.title}</b></td>
+          <td>${p.category}</td>
+          <td>${p.price}</td>
+          <td>
+            <select onchange="updateStockStatus('${p.id}', this.value)" class="form-control" style="font-size:10px; padding:3px;">
+              <option value="in" ${p.stock !== 'out' ? 'selected' : ''}>🟢 In Stock</option>
+              <option value="out" ${p.stock === 'out' ? 'selected' : ''}>🔴 Out of Stock</option>
+            </select>
+          </td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button onclick="openEditProductModal('${p.id}')" class="btn btn-outline" style="padding:3px 6px; font-size:10px;" title="Edit Product">
+                <i class="fa fa-edit" style="color:#0284C7;"></i> Edit
+              </button>
+              <button onclick="removeProduct('${p.id}')" class="btn btn-outline" style="padding:3px 6px; font-size:10px; color:red;" title="Delete Product">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    /* Gallery Controls */
+    function renderGallery() {
+      const container = document.getElementById('galleryGridContainer');
+      if (gallery.length === 0) {
+        container.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:#94a3b8; padding:20px;">No gallery media yet.</p>`;
+        return;
+      }
+      container.innerHTML = gallery.map(item => {
+        let mediaHtml = (item.type === 'video') ? `<video controls playsinline><source src="${item.url}" type="video/mp4"></video>` :
+                        (item.type === 'embed') ? `<iframe src="${item.url}" allowfullscreen></iframe>` : 
+                        `<img src="${item.url}" alt="${item.title}">`;
+        return `<div class="gallery-item-card">${mediaHtml}<div class="gallery-item-info">${item.title}</div></div>`;
+      }).join('');
+    }
+
+    function renderAdminGalleryTable() {
+      const tbody = document.getElementById('adminGalleryTableBody');
+      tbody.innerHTML = gallery.map(g => `
+        <tr>
+          <td><small>${g.type}</small></td>
+          <td><b>${g.title}</b></td>
+          <td>${g.type.toUpperCase()}</td>
+          <td><button onclick="removeGalleryItem('${g.id}')" style="color:var(--primary-color); border:none; background:none; cursor:pointer; font-weight:bold;"><i class="fa fa-trash"></i></button></td>
+        </tr>
+      `).join('');
+    }
+
+    function handleGalleryCreation(e) {
+      e.preventDefault();
+      const title = document.getElementById('gTitle').value.trim();
+      const type = document.getElementById('gType').value;
+      const fileInput = document.getElementById('gFileInput');
+      const urlInput = document.getElementById('gUrlInput').value.trim();
+
+      function saveMedia(mediaUrl, mediaType) {
+        db.collection('gallery').add({
+          title: title,
+          type: mediaType,
+          url: mediaUrl,
+          createdAt: Date.now()
+        }).then(() => {
+          closeModal('addGalleryModal');
+          alert("Gallery media publish ho gaya!");
+        }).catch(err => alert("Error: " + err.message));
+      }
+
+      if (type === 'photo_file' && fileInput.files && fileInput.files[0]) {
+        compressImageFile(fileInput.files[0], 600, 0.7, (compressed) => {
+          saveMedia(compressed, 'image');
+        });
+      } else if (type === 'video_file' && fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        if (file.size > 800000) {
+          alert("Video file 800KB se badi hai, kripya compress karein ya YouTube link dalein!");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          saveMedia(evt.target.result, 'video');
+        };
+        reader.readAsDataURL(file);
+      } else if (urlInput) {
+        let finalType = 'image';
+        let finalUrl = urlInput;
+        if (type === 'video_embed' || urlInput.includes('youtube.com') || urlInput.includes('youtu.be')) {
+          finalType = 'embed';
+          if (urlInput.includes('watch?v=')) finalUrl = urlInput.replace('watch?v=', 'embed/');
+        }
+        saveMedia(finalUrl, finalType);
+      }
+    }
+
+    function removeGalleryItem(id) {
+      if (confirm("Ise gallery se hatayein?")) {
+        db.collection('gallery').doc(id).delete();
+      }
+    }
+
+    function toggleGalleryTypeInputs() {
+      const type = document.getElementById('gType').value;
+      document.getElementById('gFileInputWrap').style.display = (type === 'photo_file' || type === 'video_file') ? 'block' : 'none';
+      document.getElementById('gUrlInputWrap').style.display = (type === 'photo_url' || type === 'video_embed') ? 'block' : 'none';
+    }
+
+    // Google Sign In
+    function handleGoogleSignIn() {
+      auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+        .then(() => {
+          db.collection('settings').doc('stats').update({
+            userLogins: firebase.firestore.FieldValue.increment(1)
+          });
+          closeModal('authModal');
+        })
+        .catch(err => alert("Google Sign In Error: " + err.message));
+    }
+
+    // Email & Password Auth
+    function handleEmailAuth(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim();
+      const pass = document.getElementById('authPassword').value.trim();
+      auth.signInWithEmailAndPassword(email, pass)
+        .then(() => closeModal('authModal'))
+        .catch(err => alert("Login Error: " + err.message));
+    }
+
+    function handleEmailSignUp() {
+      const email = document.getElementById('authEmail').value.trim();
+      const pass = document.getElementById('authPassword').value.trim();
+      if (!email || !pass) {
+        alert("Pehle email aur password dalein!");
+        return;
+      }
+      auth.createUserWithEmailAndPassword(email, pass)
+        .then(() => {
+          alert("Account ban gaya!");
+          closeModal('authModal');
+        })
+        .catch(err => alert("Sign Up Error: " + err.message));
+    }
+
+    auth.onAuthStateChanged((user) => {
+      const guestActions = document.getElementById('guestActions');
+      const loggedInActions = document.getElementById('loggedInActions');
+
+      if (user) {
+        guestActions.style.display = 'none';
+        loggedInActions.style.display = 'flex';
+        verifyCurrentAdminStatus(user);
+      } else {
+        guestActions.style.display = 'block';
+        loggedInActions.style.display = 'none';
+        switchView('customer');
+      }
+    });
+
+    function logoutSession() { auth.signOut().then(() => alert("Safely logged out.")); }
+    function switchView(view) {
+      document.getElementById('customerView').style.display = (view === 'customer') ? 'block' : 'none';
+      document.getElementById('adminView').style.display = (view === 'admin') ? 'block' : 'none';
+    }
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      recordVisitorHit();
+      setupCloudListeners();
+      updateCartUI();
+      applyLanguageTexts();
+      setTimeout(dismissPreloader, 1400);
+    });
+  </script>
+</body>
+</html>
