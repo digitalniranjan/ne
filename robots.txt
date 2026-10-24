@@ -1,0 +1,5 @@
+
+User-agent: *
+Allow: /
+
+Sitemap: https://digitalniranjan.github.io/ne/sitemap.xml
