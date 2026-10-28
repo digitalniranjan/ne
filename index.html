@@ -1481,7 +1481,29 @@
       document.getElementById('pPrice').value = guessedPrice;
       alert("✨ AI ne product specs aur category automatic bhar di hai!");
     }
+function pushSettingsToDb() {
+  // 🔴 YAHAN YE LINE ADD KAREIN 🔴
+  if (document.getElementById('settingAboutUs') && document.getElementById('settingAboutUs').value.trim() !== "") {
+      updateData.aboutUsText = document.getElementById('settingAboutUs').value.trim();
+  }
+  // 🔴 UPAR WALI LINE ADD KAREIN 🔴
 
+  db.collection('settings').doc('global').set(updateData, { merge: true })
+    .then(() => {
+      alert("Store Details Live Update Ho Gaye!");
+      // 🔴 AGAR GOOGLE SCHEMA UPDATE KARNA HAI TOH YAHAN LIKHEIN 🔴
+      document.querySelector('script[type="application/ld+json"]').innerHTML = JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ElectronicsStore",
+          "name": "Niranjan Electronics",
+          "description": updateData.aboutUsText || "Authorised Distributor",
+          "telephone": "+91" + updateData.phone,
+          "address": { "@type": "PostalAddress", "streetAddress": updateData.address, "addressCountry": "IN" },
+          "hasMap": "https://maps.app.goo.gl/njorsDfYyCcRtxMRA?g_st=ac"
+      });
+    })
+    .catch(err => alert("Error: " + err.message));
+}
     function setSampleProductPhoto(type) {
       let sampleUrl = "";
       if (type === 'wire') sampleUrl = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80";
