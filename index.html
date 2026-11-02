@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niranjan Electronics - Budhaura, Khagaria | Official Store</title>
+    <meta name="description" content="Niranjan Electronics, Budhaura (848203), Khagaria, Bihar. Best electrical items, house wiring products, LED bulbs, and electronics at best prices.">
+    <meta name="keywords" content="Niranjan Electronics, Budhaura, Khagaria electronics shop, 848203 electrical items, wiring">
+    <link rel="canonical" href="https://digitalniranjan.github.io/ne/">
+
+    <!-- Open Graph (OG) & Twitter Cards for Direct Logo & Social Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Niranjan Electronics - Budhaura, Khagaria">
+    <meta property="og:description" content="Sabhi prakar ke electronic products aur house wiring items sahi daam par uplabdh hain. Abhi judein!">
+    <meta property="og:url" content="https://digitalniranjan.github.io/ne/">
+    <meta property="og:image" content="https://digitalniranjan.github.io/ne/logo.jpg">
+    <meta property="og:image:width" content="1080">
+    <meta property="og:image:height" content="1080">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://digitalniranjan.github.io/ne/logo.jpg">
+
+    <!-- Google Knowledge Graph & Local Business Schema with Direct Logo Hardcoded -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ElectronicsStore",
+      "name": "Niranjan Electronics",
+      "url": "https://digitalniranjan.github.io/ne/",
+      "logo": "https://digitalniranjan.github.io/ne/logo.jpg",
+      "image": "https://digitalniranjan.github.io/ne/logo.jpg",
+      "@id": "https://digitalniranjan.github.io/ne/",
+      "telephone": "+919931087802",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Budhaura",
+        "addressLocality": "Khagaria",
+        "addressRegion": "Bihar",
+        "postalCode": "848203",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 25.5000,
+        "longitude": 86.4800
+      },
+      "hasMap": "https://maps.app.goo.gl/kkomaHMX6v1wrEDG6?g_st=ac",
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=61594266916457",
+        "https://www.instagram.com/niranjan_electronics_",
+        "https://wa.me/919931087802"
+      ]
+    }
+    </script>
+
+    <!-- Google Sitelinks Searchbox Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": [
+        {
+          "@type": "SiteNavigationElement",
+          "position": 1,
+          "name": "Store Products",
+          "url": "https://digitalniranjan.github.io/ne/#products"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 2,
+          "name": "About Us",
+          "url": "https://digitalniranjan.github.io/ne/#about"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 3,
+          "name": "Google Map Location",
+          "url": "https://maps.app.goo.gl/kkomaHMX6v1wrEDG6?g_st=ac"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 4,
+          "name": "Contact WhatsApp",
+          "url": "https://wa.me/919931087802"
+        }
+      ]
+    }
+    </script>
+
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Apple-style Clean White CSS Styling -->
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --text-color: #1d1d1f;
+            --accent-color: #e50914;
+            --card-bg: #ffffff;
+            --border-color: #d2d2d7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.5; }
+        
+        header { position: fixed; top: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-color); z-index: 1000; display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; }
+        .brand-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .brand-logo img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; }
+        .brand-logo span { font-size: 17px; font-weight: 600; color: var(--text-color); }
+        nav a { margin-left: 20px; text-decoration: none; color: #424245; font-size: 14px; transition: color 0.2s; cursor: pointer; }
+        nav a:hover { color: var(--accent-color); }
+
+        .hero { margin-top: 65px; padding: 50px 20px; text-align: center; background: #ffffff; border-bottom: 1px solid var(--border-color); }
+        .hero-logo-container { width: 110px; height: 110px; margin: 0 auto 20px auto; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(229, 9, 20, 0.2); }
+        .hero-logo-container img { width: 100%; height: 100%; object-fit: cover; }
+        .hero h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 10px; color: #111; }
+        .hero p { font-size: 18px; color: #515154; max-width: 600px; margin: 0 auto 24px auto; }
+        .btn { display: inline-block; background-color: var(--accent-color); color: white; padding: 12px 24px; border-radius: 980px; font-size: 15px; text-decoration: none; font-weight: 500; transition: opacity 0.2s; box-shadow: 0 4px 14px rgba(229, 9, 20, 0.3); border: none; cursor: pointer; }
+        .btn:hover { opacity: 0.9; }
+
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        section { background: var(--card-bg); border-radius: 18px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
+        h2 { font-size: 22px; font-weight: 600; margin-bottom: 15px; color: #1d1d1f; }
+        p { color: #515154; margin-bottom: 15px; font-size: 15px; }
+
+        /* Products Grid */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
+        .product-card { background: #fbfbfd; border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; text-align: left; }
+        .product-card h3 { font-size: 17px; margin-bottom: 8px; color: #1d1d1f; }
+        .product-card .price { font-size: 16px; font-weight: 600; color: var(--accent-color); margin-bottom: 10px; }
+        .product-card p { font-size: 13px; color: #666; margin-bottom: 15px; }
+        .order-btn { display: block; text-align: center; background: #25D366; color: white; padding: 8px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 500; }
+
+        .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .link-card { display: block; background: #fbfbfd; border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; text-decoration: none; color: var(--text-color); font-weight: 500; text-align: center; transition: all 0.2s; }
+        .link-card:hover { border-color: var(--accent-color); transform: translateY(-2px); }
+
+        /* Admin Panel */
+        #admin-panel { display: none; background: #fff9f9; border: 2px dashed var(--accent-color); padding: 25px; border-radius: 14px; margin-top: 25px; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; }
+        
+        footer { text-align: center; padding: 30px; color: #86868b; font-size: 13px; border-top: 1px solid var(--border-color); background: #ffffff; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <a href="#" class="brand-logo">
+            <img src="logo.jpg" alt="Niranjan Electronics Logo">
+            <span>Niranjan Electronics</span>
+        </a>
+        <nav>
+            <a href="#products">Store</a>
+            <a href="#about">About Us</a>
+            <a href="#social">Connect</a>
+            <a onclick="toggleAdminPanel()" style="font-weight:600; color:var(--accent-color); cursor:pointer;">Admin</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-logo-container">
+            <img src="logo.jpg" alt="Niranjan Electronics Logo">
+        </div>
+        <h1>Niranjan Electronics</h1>
+        <p>Budhaura, Khagaria (848203) — Aapka apna vishwasniya electrical aur electronic store.</p>
+        <a href="https://wa.me/919931087802" target="_blank" class="btn">WhatsApp par Order Karein &rarr;</a>
+    </div>
+
+    <div class="container">
+        
+        <!-- Products Section -->
+        <section id="products">
+            <h2>Our Store Showcase</h2>
+            <p>Humare yaha sabhi prakar ke electronic appliances, LED bulbs, aur house wiring ka saaman uchit daam par uplabdh hai.</p>
+            
+            <div id="product-list" class="products-grid">
+                <p>Loading products from database...</p>
+            </div>
+
+            <!-- Secure Admin Panel (Only for piyushkrjaiswal99@gmail.com) -->
+            <div id="admin-panel">
+                <h3>Admin Management Panel</h3>
+                <p id="admin-user-info" style="font-size: 13px; color: #666; margin: 10px 0;"></p>
+                
+                <div id="admin-login-box">
+                    <p style="margin-bottom:10px;">Sirf authorized admin (<strong>piyushkrjaiswal99@gmail.com</strong>) hi login kar sakte hain.</p>
+                    <button class="btn" onclick="loginWithGoogle()">Google Login as Admin</button>
+                </div>
+
+                <div id="product-form-box" style="display:none; margin-top:15px;">
+                    <h4 style="margin-bottom: 10px; color: #1d1d1f;">Naya Product Jodein</h4>
+                    <input type="text" id="p-name" placeholder="Product Name (jaise: Anchor Switch, LED Bulb)">
+                    <input type="text" id="p-price" placeholder="Price in ₹ (jaise: 150)">
+                    <textarea id="p-desc" placeholder="Product Description"></textarea>
+                    <button class="btn" onclick="uploadProduct()">Publish Product</button>
+                    <button class="btn" style="background:#555; margin-left:10px;" onclick="logoutAdmin()">Logout</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about">
+            <h2>About Niranjan Electronics</h2>
+            <p><strong>Niranjan Electronics</strong> Budhaura, Khagaria (Postal Code: 848203) mein sthit ek pramukh electrical aur electronic shop hai. Humare yahan ghar ki wiring ke liye high-quality wires, switches, LED lights, aur sabhi electronic appliances behad kifayati daam par milte hain.</p>
+            <p>Hamara maksad grahakon ko behtareen quality aur bharosemand seva dena hai. Aap humse seedha WhatsApp ya Google Map ke zariye jud sakte hain.</p>
+        </section>
+
+        <!-- Social Media & Maps Section -->
+        <section id="social">
+            <h2>Connect With Us & Location</h2>
+            <p>Google Search aur Maps par humein aasani se dhundhne aur connect karne ke liye niche diye gaye official links ka upyog karein:</p>
+            
+            <div class="links-grid">
+                <a href="https://maps.app.goo.gl/kkomaHMX6v1wrEDG6?g_st=ac" target="_blank" class="link-card" rel="me">📍 Google Maps Location</a>
+                <a href="https://wa.me/919931087802" target="_blank" class="link-card" rel="me">💬 WhatsApp Chat</a>
+                <a href="https://www.instagram.com/niranjan_electronics_" target="_blank" class="link-card" rel="me">📸 Instagram Profile</a>
+                <a href="https://www.facebook.com/profile.php?id=61594266916457" target="_blank" class="link-card" rel="me">📘 Facebook Page</a>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Niranjan Electronics, Budhaura, Khagaria (848203). All rights reserved.</p>
+    </footer>
+
+    <!-- Firebase Initialization & Logic Script -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "digitalniranjan0.firebaseapp.com",
+            projectId: "digitalniranjan0",
+            storageBucket: "digitalniranjan0.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        const ADMIN_EMAIL = "piyushkrjaiswal99@gmail.com";
+
+        function toggleAdminPanel() {
+            const panel = document.getElementById('admin-panel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Google Login for Admin
+        function loginWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).then((result) => {
+                const user = result.user;
+                if (user.email === ADMIN_EMAIL) {
+                    checkAdminState(user);
+                } else {
+                    auth.signOut();
+                    alert("Access Denied! Yeh panel sirf piyushkrjaiswal99@gmail.com ke liye hai.");
+                }
+            }).catch((error) => {
+                alert("Login Error: " + error.message);
+            });
+        }
+
+        // Auth State Observer
+        auth.onAuthStateChanged((user) => {
+            if (user && user.email === ADMIN_EMAIL) {
+                document.getElementById('admin-login-box').style.display = 'none';
+                document.getElementById('product-form-box').style.display = 'block';
+                document.getElementById('admin-user-info').innerText = "Logged in as Admin: " + user.email;
+            } else {
+                document.getElementById('admin-login-box').style.display = 'block';
+                document.getElementById('product-form-box').style.display = 'none';
+                document.getElementById('admin-user-info').innerText = "";
+            }
+        });
+
+        function logoutAdmin() {
+            auth.signOut().then(() => {
+                alert("Logged out successfully.");
+            });
+        }
+
+        // Upload Product to Firestore
+        function uploadProduct() {
+            const name = document.getElementById('p-name').value.trim();
+            const price = document.getElementById('p-price').value.trim();
+            const desc = document.getElementById('p-desc').value.trim();
+
+            if (!name || !price) {
+                alert("Kripya Product Name aur Price bharein!");
+                return;
+            }
+
+            db.collection("products").add({
+                name: name,
+                price: price,
+                description: desc,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert("Product successfully added!");
+                document.getElementById('p-name').value = '';
+                document.getElementById('p-price').value = '';
+                document.getElementById('p-desc').value = '';
+                fetchProducts();
+            }).catch((error) => {
+                alert("Error adding product: " + error.message);
+            });
+        }
+
+        // Fetch Products from Firestore & Render
+        function fetchProducts() {
+            const listContainer = document.getElementById('product-list');
+            db.collection("products").orderBy("createdAt", "desc").get().then((querySnapshot) => {
+                if (querySnapshot.empty) {
+                    listContainer.innerHTML = "<p>Abhi koi product available nahi hai.</p>";
+                    return;
+                }
+                let html = "";
+                querySnapshot.forEach((doc) => {
+                    const prod = doc.data();
+                    html += `
+                        <div class="product-card">
+                            <h3>${prod.name}</h3>
+                            <div class="price">₹${prod.price}</div>
+                            <p>${prod.description || 'High quality item from Niranjan Electronics.'}</p>
+                            <a href="https://wa.me/919931087802?text=Hello,%20mujhe%20ye%20product%20chahiye:%20${encodeURIComponent(prod.name)}%20(Price:%20₹${prod.price})" target="_blank" class="order-btn">Order on WhatsApp</a>
+                        </div>
+                    `;
+                });
+                listContainer.innerHTML = html;
+            }).catch((error) => {
+                listContainer.innerHTML = "<p>Error loading products.</p>";
+            });
+        }
+
+        // Load products on page load
+        window.onload = function() {
+            fetchProducts();
+        };
+    </script>
+</body>
+</html>
